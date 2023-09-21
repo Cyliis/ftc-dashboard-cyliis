@@ -68,19 +68,33 @@ public class Canvas {
     }
 
     public Canvas strokeLine(double x1, double y1, double x2, double y2) {
-        strokePolyline(new double[] { x1, x2 }, new double[] { y1, y2 });
+        strokePolyline(new double[]{x1, x2}, new double[]{y1, y2});
+        return this;
+    }
+
+    public Canvas strokeDesiredPath(ArrayList<GPose> p) {
+        setFill("blue");
+        for (int i = 1; i < p.size(); i++)
+            strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+        return this;
+    }
+
+    public Canvas strokeActualPath(ArrayList<GPose> p) {
+        setFill("red");
+        for (int i = 1; i < p.size(); i++)
+            strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
         return this;
     }
 
     public Canvas fillRect(double x, double y, double width, double height) {
-        fillPolygon(new double[] { x, x + width, x + width, x },
-                new double[] { y, y, y + height, y + height });
+        fillPolygon(new double[]{x, x + width, x + width, x},
+                new double[]{y, y, y + height, y + height});
         return this;
     }
 
     public Canvas strokeRect(double x, double y, double width, double height) {
-        strokePolygon(new double[] { x, x + width, x + width, x },
-                new double[] { y, y, y + height, y + height });
+        strokePolygon(new double[]{x, x + width, x + width, x},
+                new double[]{y, y, y + height, y + height});
         return this;
     }
 
@@ -121,9 +135,10 @@ public class Canvas {
     }
 
     public Canvas drawGrid(double x, double y, double width, double height, int numTicksX, int numTicksY) {
-        drawGrid(x, y, width, height, numTicksX, numTicksY, 0, 0,0, true);
+        drawGrid(x, y, width, height, numTicksX, numTicksY, 0, 0, 0, true);
         return this;
     }
+
     public Canvas drawGrid(double x, double y, double width, double height, int numTicksX, int numTicksY, double theta, double pivotX, double pivotY, boolean usePageFrame) {
         ops.add(new Grid(x, y, width, height, numTicksX, numTicksY, theta, pivotX, pivotY, usePageFrame));
         return this;
