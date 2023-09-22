@@ -2,14 +2,15 @@ package com.acmerobotics.dashboard.canvas;
 
 // Global Pose Class
 public class GPose {
-    private final double x,y,heading;
+    private final double x, y, heading;
 
-    public GPose(double x, double y, double heading){
+    public GPose(double x, double y, double heading) {
         this.x = x;
         this.y = y;
         this.heading = heading;
     }
-    public double getX(){
+
+    public double getX() {
         return x;
     }
 

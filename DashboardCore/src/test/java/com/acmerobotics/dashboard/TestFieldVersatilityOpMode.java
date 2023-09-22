@@ -112,64 +112,20 @@ public class TestFieldVersatilityOpMode extends TestOpMode {
         //TelemetryPacket packet = new TelemetryPacket(false);
         TelemetryPacket packet = new TelemetryPacket();
 
-        packet.fieldOverlay()
-            //explicitly draw another field image
-            //images, text and grids by default are drawn using the page transform where 0,0 is top left and 144,144 is bottom right
-            //but extra parameters are available to allow rotation and drawing in the current transform
-            //all other drawing primitives are rendered in the current (or default) transform, as built using setTranslation, setRotation and setScale
-            .setAlpha(.25)
-            .drawImage(ALTIMGSRC, ALTIMGX, ALTIMGY, ALTIMGW, ALTIMGH)
-
-            //optionally add sets of custom gridlines, minimum of 2 to render field edges, anything less suppresses gridlines in that direction, default is 7
-            .setAlpha(1.0)
-            //this is how to draw the default grid if you disable the default field
-            //this will be drawn in the pageFrame orientation
-            .drawGrid(0, 0, 144, 144, 7, 7)
-            //disabling the pageFrame will draw a grid in the current transform
-            .drawGrid(GRIDX, GRIDY, GRIDW, GRIDH, GRID_LINESX, GRID_LINESY, Math.toRadians(GRID_THETA_DEGREES), GRID_PIVOTX, GRID_PIVOTY, GRID_USE_PAGE_FRAME)
-            //.drawGrid(GRIDX, GRIDY, GRIDW, GRIDH, GRID_LINESX, GRID_LINESY, angleAnim, GRID_PIVOTX, GRID_PIVOTY, GRID_USE_PAGE_FRAME)
-
-            //you can draw multiple images and can rotate them around a specified anchor/pivot point and draw them in the current transform instead of the page frame
-            .drawImage("/dash/ftc.jpg", 24, 24, 48, 48, 0, 0, 0, false)
-
-            //demonstrate an alternate transform to move the origin and orientation
-            //default origin for dashboard is in the center of the field with X axis pointing up
-            //for powerplay season iron reign decided to set the origin to the alliance substation
-            //to take advantage of the inherent symmetries of the challenge:
-            .setRotation(RED_ALLIANCE ? 0 : Math.PI)
-            .setTranslation(ORIGIN_OFFSET_X, ORIGIN_OFFSET_Y * (RED_ALLIANCE ? -1 : 1))
-
-            //.setRotation(-Math.PI/4) //uncomment to see a rotation of 45 degrees, there have been FTC games with a diagonal field symmetry
-
-            .setScale(SCALEX, SCALEY) //be sure the vales evaluate to a doubles and not ints
-            //.setScale(144.0/105,144.0/105) //example of FIFA soccer field in meters
-
-            //draw the axes of the new origin
-            //the text labels will be drawn in the current origin transform, not in the page frame
-            .setStrokeWidth(1)
-            .setStroke("green")
-            .strokeLine(0, 0, 0, 24) //y axis
-            .setFill("green")
-            .strokeText("Y axis", 0, (RED_ALLIANCE ? 24 : 0), "8px serif", -Math.PI / 2 * (RED_ALLIANCE ? -1 : 1), false)
-            .setStroke("red")
-            .strokeLine(0, 0, 24, 0) //x axis
-            .setFill("red")
-            .fillText("X axis", 0, 0, "8px Arial", 0, false)
-
-            .setStroke("goldenrod")
-            .strokeCircle(0, 0, ORBITAL_RADIUS)
-            .setFill("black")
-            .fillPolygon(bxPoints, byPoints)
-            .setFill("blue")
-            //label the arrow as pointing 15 degree counter clockwise
-            .fillText("15 deg CC", bx - 10, by, "8px Arial", Math.toRadians(90 - 15), false)
-            .setAlpha(.25)
-            //you can draw multiple images and can rotate them around a specified pivot point, and draw them in the current transform instead of the page frame
-            .drawImage("/dash/powerplay.png", 24, 24, 48, 48, angleAnim, 24, 24, false)
-            .setAlpha(1.0)
-            .fillText("baseline", 48, 48, "8px Arial", Math.toRadians(90), false);
+        double start = 0, end = 1;
+        double eps = 0.001;
+        while (start <= end) {
+            packet.fieldOverlay().strokeLine(
+                    Math.sin(start)*15,
+                    Math.cos(start)*10,
+                    Math.sin(start + eps)*10,
+                    Math.cos(start + eps)*10
+            );
+            start += eps;
+        }
 
         dashboard.sendTelemetryPacket(packet);
         Thread.sleep(10);
     }
+
 }
