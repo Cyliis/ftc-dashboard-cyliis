@@ -86,23 +86,22 @@ public class Canvas {
         for (int i = 1; i < p.size(); i++)
             setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
         GPose last = p.get(p.size() - 1);
-        double dx[] = {last.getX() - 9 * Math.cos(last.getHeading()), last.getX() + 9 * Math.cos(last.getHeading()), last.getX() + 9 * Math.cos(last.getHeading()), last.getX() - 9 * Math.cos(last.getHeading())};
-        double dy[] = {last.getY() - 9 * Math.sin(last.getHeading()), last.getY() - 9 * Math.sin(last.getHeading()), last.getY() + 9 * Math.sin(last.getHeading()), last.getY() + 9 * Math.sin(last.getHeading())};
-        GPolygon gp =
+        double length = 400.0/25.4, width = 370.0/25.4;
+        GPolygon gp = new GPolygon(new Vector(-length/2.0,width/2.0), new Vector(length/2.0,width/2.0), new Vector(length/2.0,-width/2.0), new Vector(-length/2.0,-width/2.0));
 
+        gp.rotate(last.getHeading());
 
-        for (int i = 0; i < 4; i++) {
-            double tempX = dx[i] - last.getX();
-            double tempY = dy[i] - last.getY();
+        int i = 0;
 
-            double rotatedX = tempX * Math.cos(last.getHeading()) - tempY * Math.sin(last.getHeading());
-            double rotatedY = tempX * Math.sin(last.getHeading()) + tempY * Math.cos(last.getHeading());
+        double[] dx = new double[4];
+        double[] dy = new double[4];
 
-            dx[i] = rotatedX + last.getX();
-            dy[i] = rotatedY + last.getY();
+        for(Vector vertex: gp.getVertexes()){
+            dx[i]=vertex.getX() + last.getX();
+            dy[i]=vertex.getY() + last.getY();
         }
-        strokePolyline(dx,
-                dy);
+
+        strokePolyline(dx, dy);
 
         // strokeRect(last.getX()-9, last.getY()-9, 18,18);
         return this;
