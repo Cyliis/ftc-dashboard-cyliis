@@ -73,16 +73,17 @@ public class Canvas {
     }
 
     public Canvas strokeDesiredPath(ArrayList<GPose> p) {
-        setFill("blue");
         for (int i = 1; i < p.size(); i++)
-            strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+            setStrokeWidth(1).setStroke("blue").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+
         return this;
     }
 
     public Canvas strokeActualPath(ArrayList<GPose> p) {
-        setFill("red");
+
         for (int i = 1; i < p.size(); i++)
-            strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+            setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+
         return this;
     }
 

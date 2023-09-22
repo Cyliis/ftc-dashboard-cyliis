@@ -27,7 +27,6 @@ public class Localizer implements IRobotModule {
         this.imu = new CoolIMU(hm);
         this.localizer = new FunnyLocalizer(hm, imu);
         localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
-        poses=new ArrayList<>();
     }
 
     public Localizer(HardwareMap hm,DcMotorEx parallelEncoder, DcMotorEx perpendicularEncoder, Pose initialPose){
