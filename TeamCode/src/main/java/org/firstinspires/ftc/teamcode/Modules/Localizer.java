@@ -20,36 +20,36 @@ public class Localizer implements IRobotModule {
     protected Pose pose;
     private FunnyLocalizer localizer;
     public CoolIMU imu;
-    private ArrayList<Pose>poses = new ArrayList<>();
+    private ArrayList<Pose> poses = new ArrayList<>();
 
-    public Localizer(HardwareMap hm, Pose initialPose){
+    public Localizer(HardwareMap hm, Pose initialPose) {
         this.pose = initialPose;
         this.imu = new CoolIMU(hm);
         this.localizer = new FunnyLocalizer(hm, imu);
         localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
     }
 
-    public Localizer(HardwareMap hm,DcMotorEx parallelEncoder, DcMotorEx perpendicularEncoder, Pose initialPose){
+    public Localizer(HardwareMap hm, DcMotorEx parallelEncoder, DcMotorEx perpendicularEncoder, Pose initialPose) {
         this.pose = initialPose;
         this.imu = new CoolIMU(hm);
         this.localizer = new FunnyLocalizer(parallelEncoder, perpendicularEncoder, imu);
         localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
     }
 
-    public void setPose(Pose pose){
+    public void setPose(Pose pose) {
         this.pose = pose;
     }
 
-    public Pose getPoseEstimate(){
+    public Pose getPoseEstimate() {
         return pose;
     }
 
-    public ArrayList<GPose> getAllGPoses(){
+    public ArrayList<GPose> getAllGPoses() {
         ArrayList<GPose> gPoses = new ArrayList<>();
-        for(Pose pose: poses){
-            gPoses.add(new GPose(pose.getX(),pose.getY(),pose.getHeading()));
+        for (Pose pose : poses) {
+            gPoses.add(new GPose(pose.getX(), pose.getY(), pose.getHeading()));
         }
-        return  gPoses;
+        return gPoses;
     }
 
     @Override

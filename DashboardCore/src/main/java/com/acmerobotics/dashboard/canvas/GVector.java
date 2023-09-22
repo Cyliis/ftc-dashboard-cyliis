@@ -1,35 +1,35 @@
 package com.acmerobotics.dashboard.canvas;
 
-public class Vector {
+public class GVector {
     private double x,y,z;
 
-    public Vector(double x, double y, double z){
+    public GVector(double x, double y, double z){
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Vector(double x, double y){
+    public GVector(double x, double y){
         this(x,y,0);
     }
 
-    public Vector(){
+    public GVector(){
         this(0,0,0);
     }
 
-    public Vector(Vector otherVector){
-        this.x = otherVector.x;
-        this.y = otherVector.y;
-        this.z = otherVector.z;
+    public GVector(GVector otherGVector){
+        this.x = otherGVector.x;
+        this.y = otherGVector.y;
+        this.z = otherGVector.z;
     }
 
-    public static Vector fromAngleAndMagnitude(double t, double m){
-        return new Vector(m*Math.cos(t), m*Math.sin(t));
+    public static GVector fromAngleAndMagnitude(double t, double m){
+        return new GVector(m*Math.cos(t), m*Math.sin(t));
     }
 
     //t1 is angle in xy plane, t2 is angle with xy plane
-    public static Vector fromAngleAndMagnitude(double t1, double t2, double m){
-        return new Vector(Math.cos(t1)*Math.cos(t2)*m, Math.sin(t1)*Math.cos(t2)*m, Math.sin(t2)*m);
+    public static GVector fromAngleAndMagnitude(double t1, double t2, double m){
+        return new GVector(Math.cos(t1)*Math.cos(t2)*m, Math.sin(t1)*Math.cos(t2)*m, Math.sin(t2)*m);
     }
 
     public double getX() {
@@ -48,8 +48,8 @@ public class Vector {
         return Math.sqrt(x*x + y*y + z*z);
     }
 
-    public Vector plus(Vector other){
-        return new Vector(x + other.getX(), y + other.getY(), z + other.getZ());
+    public GVector plus(GVector other){
+        return new GVector(x + other.getX(), y + other.getY(), z + other.getZ());
     }
 
     public void scaleToMagnitude(double targetMagnitude){
@@ -64,18 +64,18 @@ public class Vector {
         z = z * a;
     }
 
-    public Vector scaledBy(double a){
-        return new Vector(x * a, y * a, z * a);
+    public GVector scaledBy(double a){
+        return new GVector(x * a, y * a, z * a);
     }
 
-    public Vector scaledToMagnitude(double targetMagnitude){
-        Vector aux = new Vector(this);
+    public GVector scaledToMagnitude(double targetMagnitude){
+        GVector aux = new GVector(this);
         aux.scaleToMagnitude(targetMagnitude);
         return aux;
     }
 
-    public static Vector rotateBy(Vector vector, double theta){
-        return new Vector(Math.cos(theta) * vector.getX() + Math.sin(theta) * vector.getY(), Math.cos(theta) * vector.getY() - Math.sin(theta) * vector.getX());
+    public static GVector rotateBy(GVector GVector, double theta){
+        return new GVector(Math.cos(theta) * GVector.getX() + Math.sin(theta) * GVector.getY(), Math.cos(theta) * GVector.getY() - Math.sin(theta) * GVector.getX());
     }
 
     @Override

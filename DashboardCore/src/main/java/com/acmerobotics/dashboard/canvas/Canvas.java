@@ -29,14 +29,17 @@ public class Canvas {
         ops.add(new Text(text, x, y, font, theta, true, usePageFrame));
         return this;
     }
+
     public Canvas strokeText(String text, double x, double y, String font, double theta) {
         strokeText(text, x, y, font, theta, true);
         return this;
     }
+
     public Canvas fillText(String text, double x, double y, String font, double theta, boolean usePageFrame) {
         ops.add(new Text(text, x, y, font, theta, false, usePageFrame));
         return this;
     }
+
     public Canvas fillText(String text, double x, double y, String font, double theta) {
         fillText(text, x, y, font, theta, true);
         return this;
@@ -75,7 +78,6 @@ public class Canvas {
     public Canvas strokeDesiredPath(ArrayList<GPose> p) {
         for (int i = 1; i < p.size(); i++)
             setStrokeWidth(1).setStroke("blue").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
-
         return this;
     }
 
@@ -83,7 +85,26 @@ public class Canvas {
 
         for (int i = 1; i < p.size(); i++)
             setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+        GPose last = p.get(p.size() - 1);
+        double dx[] = {last.getX() - 9 * Math.cos(last.getHeading()), last.getX() + 9 * Math.cos(last.getHeading()), last.getX() + 9 * Math.cos(last.getHeading()), last.getX() - 9 * Math.cos(last.getHeading())};
+        double dy[] = {last.getY() - 9 * Math.sin(last.getHeading()), last.getY() - 9 * Math.sin(last.getHeading()), last.getY() + 9 * Math.sin(last.getHeading()), last.getY() + 9 * Math.sin(last.getHeading())};
+        GPolygon gp =
 
+
+        for (int i = 0; i < 4; i++) {
+            double tempX = dx[i] - last.getX();
+            double tempY = dy[i] - last.getY();
+
+            double rotatedX = tempX * Math.cos(last.getHeading()) - tempY * Math.sin(last.getHeading());
+            double rotatedY = tempX * Math.sin(last.getHeading()) + tempY * Math.cos(last.getHeading());
+
+            dx[i] = rotatedX + last.getX();
+            dy[i] = rotatedY + last.getY();
+        }
+        strokePolyline(dx,
+                dy);
+
+        // strokeRect(last.getX()-9, last.getY()-9, 18,18);
         return this;
     }
 

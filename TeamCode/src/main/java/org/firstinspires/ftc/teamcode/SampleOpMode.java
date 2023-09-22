@@ -62,7 +62,7 @@ public class SampleOpMode extends LinearOpMode {
         waitForStart();
 
         localizer.imu.startIMUThread(this);
-
+        int loop=0;
         ElapsedTime loopTimer = new ElapsedTime();
         loopTimer.startTime();
 
@@ -76,7 +76,7 @@ public class SampleOpMode extends LinearOpMode {
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.fieldOverlay().strokeDesiredPath(lol.getAllGPoses()).strokeActualPath(localizer.getAllGPoses());
-            dash.sendTelemetryPacket(packet );
+            dash.sendTelemetryPacket(packet);
 
         }
     }
