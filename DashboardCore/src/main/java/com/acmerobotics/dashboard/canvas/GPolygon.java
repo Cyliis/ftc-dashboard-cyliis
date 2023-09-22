@@ -20,8 +20,9 @@ public class GPolygon {
     }
 
     void rotate(double theta){
-        for(GVector vertex: vertexes){
-            vertex = GVector.rotateBy(vertex, theta);
+        for(int i = 0;i < vertexes.size(); i++){
+            vertexes.set(i,GVector.rotateBy(vertexes.get(i), theta));
         }
     }
+
 }

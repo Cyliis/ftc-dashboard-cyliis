@@ -64,11 +64,10 @@ public class TestFieldVersatilityOpMode extends TestOpMode {
         //TelemetryPacket packet = new TelemetryPacket(false);
         TelemetryPacket packet = new TelemetryPacket();
 
-            robotPos = new ArrayList<>();
-            if(loops<2*Math.PI)
-            for (double i = 0; i < 2 * Math.PI; i += 0.01)
-                robotPos.add(new GPose(10 * i, 10 * Math.cos(i), loops));
-            packet.fieldOverlay().strokeActualPath(robotPos);
+            if(loops<2*Math.PI) {
+                    robotPos.add(new GPose(10 * loops, 10 * Math.cos(loops), loops));
+            }
+                packet.fieldOverlay().strokeActualPath(robotPos);
 
 
         dashboard.sendTelemetryPacket(packet);
