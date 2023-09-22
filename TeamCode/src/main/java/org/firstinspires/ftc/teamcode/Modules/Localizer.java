@@ -20,7 +20,7 @@ public class Localizer implements IRobotModule {
     protected Pose pose;
     private FunnyLocalizer localizer;
     public CoolIMU imu;
-    private ArrayList<Pose>poses;
+    private ArrayList<Pose>poses = new ArrayList<>();
 
     public Localizer(HardwareMap hm, Pose initialPose){
         this.pose = initialPose;
