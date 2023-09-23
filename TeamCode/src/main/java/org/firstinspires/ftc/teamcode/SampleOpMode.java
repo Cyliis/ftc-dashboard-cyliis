@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.PI;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -32,10 +34,10 @@ public class SampleOpMode extends LinearOpMode {
     FtcDashboard dash;
 
     CubicBezierTangentHeadingTrajectorySegment segment1 = new CubicBezierTangentHeadingTrajectorySegment(
-            new Pose(0, 0, 0),
-            new Pose(48, 0, 0),
-            new Pose(48, -24, 0),
-            new Pose(96, -24, 0)
+            new Pose(0,0,0),
+            new Pose(72,0,0),
+            new Pose(72,0,0),
+            new Pose(72,-48,-PI/2)
     );
 
     Trajectory lol = new TrajectoryBuilder(segment1)
@@ -72,8 +74,6 @@ public class SampleOpMode extends LinearOpMode {
             localizer.update();
             follower.update();
             drive.update();
-
-
             TelemetryPacket packet = new TelemetryPacket();
             packet.fieldOverlay().strokeDesiredPath(lol.getAllGPoses()).strokeActualPath(localizer.getAllGPoses());
             dash.sendTelemetryPacket(packet);

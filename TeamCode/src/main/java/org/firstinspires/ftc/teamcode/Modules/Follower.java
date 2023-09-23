@@ -5,6 +5,7 @@ import static java.lang.Math.PI;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.Trajectory;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
@@ -46,6 +47,9 @@ public class Follower implements IRobotModule {
         this.pid = false;
         this.drive.setRunMode(MecanumDrive.RunMode.Vector);
         this.currentFollowedPoint = 0.001;
+
+        timer.startTime();
+        timer.reset();
     }
 
     public Trajectory getTrajectory(){
@@ -55,6 +59,8 @@ public class Follower implements IRobotModule {
     public Vector tangentVelocityVector = new Vector();
     public Vector driveVector = new Vector();
     public Vector correctingVector = new Vector();
+
+    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void update() {
@@ -87,6 +93,8 @@ public class Follower implements IRobotModule {
         Vector centripetalCorrectionVector = new Vector(Math.cos(Math.atan2(tangentVelocityVector.getY(), tangentVelocityVector.getX()) + PI/2.0),
                 Math.sin(Math.atan2(tangentVelocityVector.getY(), tangentVelocityVector.getX()) + PI/2.0))
                 .scaledBy(trajectory.getCurvature(currentFollowedPoint) * centripetalCorrectionCoefficient);
+
+        timer.reset();
 
         headingPIDController.setPID(MecanumDrive.headingPID.p, MecanumDrive.headingPID.i, MecanumDrive.headingPID.d);
         double headingDelta = trajectoryPose.getHeading() - currentPose.getHeading();
