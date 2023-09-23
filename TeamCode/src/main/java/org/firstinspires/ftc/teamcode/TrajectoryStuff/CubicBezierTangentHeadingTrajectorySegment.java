@@ -95,7 +95,7 @@ public class CubicBezierTangentHeadingTrajectorySegment extends TrajectorySegmen
     }
 
     public Pose getPose(double t) {
-        if(t==1) return endPoint;
+        if(t>=1) return endPoint;
         return new Pose(pX.evaluate(t), pY.evaluate(t), Math.atan2(getTangentVelocity(t).getY(), getTangentVelocity(t).getX()) + tangentHeadingOffset);
     }
 
