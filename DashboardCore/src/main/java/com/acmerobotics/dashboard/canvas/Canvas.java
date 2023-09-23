@@ -85,16 +85,19 @@ public class Canvas {
 
         for (int i = 1; i < p.size(); i++)
             setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+
         GPose last = p.get(p.size() - 1);
-        last.setHeading(last.getHeading() + Math.PI / 2);
-        double length = 400.0 / 25.4, width = 370 / 25.4;
+        last.setHeading(-last.getHeading() + Math.PI / 2);
+
+        double length = 400.0 / 25.4, width = 370.0 / 25.4;
+
         GPolygon gp = new GPolygon(new GVector(-length / 2.0, width / 2.0), new GVector(0, width / 2.0), new GVector(0, 0), new GVector(0, width / 2.0), new GVector(length / 2.0, width / 2.0), new GVector(length / 2.0, -width / 2.0), new GVector(-length / 2.0, -width / 2.0));
         gp.rotate(last.getHeading());
-        int i = 0;
 
         double[] dx = new double[8];
         double[] dy = new double[8];
 
+        int i = 0;
         for (GVector vertex : gp.getVertexes()) {
             dx[i] = vertex.getX() + last.getX();
             dy[i] = vertex.getY() + last.getY();
@@ -104,7 +107,7 @@ public class Canvas {
         dy[dy.length - 1] = dy[0];
 
         setStroke("#0099ff").strokePolyline(dx, dy);
-        last.setHeading(last.getHeading() - Math.PI / 2);
+        last.setHeading(-last.getHeading() + Math.PI / 2);
         return this;
     }
 
