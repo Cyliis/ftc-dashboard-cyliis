@@ -21,7 +21,7 @@ public class TelemetryPacket {
     private static final Canvas DEFAULT_FIELD = new Canvas();
     static {
         DEFAULT_FIELD.setAlpha(0.25);
-        DEFAULT_FIELD.drawImage("/dash/powerplay.png", 0, 0, 144, 144);
+        DEFAULT_FIELD.drawImage("/dash/centerstage.png", 0, 0, 144, 144);
         DEFAULT_FIELD.setAlpha(1.0);
         DEFAULT_FIELD.drawGrid(0, 0, 144, 144, 7, 7);
     }
