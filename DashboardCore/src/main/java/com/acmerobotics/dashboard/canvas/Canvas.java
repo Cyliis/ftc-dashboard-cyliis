@@ -81,33 +81,43 @@ public class Canvas {
         return this;
     }
 
+    public Canvas strokeDesiredPathArray(double[] xPoints, double[] yPoints) {
+        setStrokeWidth(1).setStroke("blue").strokePolyline(xPoints, yPoints);
+        return this;
+    }
+
     public Canvas strokeActualPath(ArrayList<GPose> p) {
 
         for (int i = 1; i < p.size(); i++)
             setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
 
         GPose last = p.get(p.size() - 1);
-        last.setHeading(-last.getHeading() + Math.PI / 2);
+        setStroke("#0099ff").strokeRobot(last);
+        return this;
+    }
 
-        double length = 400.0 / 25.4, width = 370.0 / 25.4;
+    public Canvas strokeRobot(GPose p) {
+        p.setHeading(-p.getHeading() + Math.PI / 2);
+        {
+            double length = 400.0 / 25.4, width = 370.0 / 25.4;
+            GPolygon gp = new GPolygon(new GVector(-length / 2.0, width / 2.0), new GVector(0, width / 2.0), new GVector(0, 0), new GVector(0, width / 2.0), new GVector(length / 2.0, width / 2.0), new GVector(length / 2.0, -width / 2.0), new GVector(-length / 2.0, -width / 2.0));
+            gp.rotate(p.getHeading());
 
-        GPolygon gp = new GPolygon(new GVector(-length / 2.0, width / 2.0), new GVector(0, width / 2.0), new GVector(0, 0), new GVector(0, width / 2.0), new GVector(length / 2.0, width / 2.0), new GVector(length / 2.0, -width / 2.0), new GVector(-length / 2.0, -width / 2.0));
-        gp.rotate(last.getHeading());
+            double[] dx = new double[8];
+            double[] dy = new double[8];
 
-        double[] dx = new double[8];
-        double[] dy = new double[8];
+            int i = 0;
+            for (GVector vertex : gp.getVertexes()) {
+                dx[i] = vertex.getX() + p.getX();
+                dy[i] = vertex.getY() + p.getY();
+                i++;
+            }
+            dx[dx.length - 1] = dx[0];
+            dy[dy.length - 1] = dy[0];
 
-        int i = 0;
-        for (GVector vertex : gp.getVertexes()) {
-            dx[i] = vertex.getX() + last.getX();
-            dy[i] = vertex.getY() + last.getY();
-            i++;
+            strokePolyline(dx, dy);
         }
-        dx[dx.length - 1] = dx[0];
-        dy[dy.length - 1] = dy[0];
-
-        setStroke("#0099ff").strokePolyline(dx, dy);
-        last.setHeading(-last.getHeading() + Math.PI / 2);
+        p.setHeading(-p.getHeading() + Math.PI / 2);
         return this;
     }
 

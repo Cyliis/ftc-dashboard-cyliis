@@ -21,9 +21,11 @@ public class Follower implements IRobotModule {
 
     private final MecanumDrive drive;
     private final Localizer localizer;
+    public final PredictiveLocalizer predictiveLocalizer;
 
     private Trajectory trajectory;
     public double currentFollowedPoint = 0;
+    public double predictedFollowedPoint = 0;
 
     private final PIDController headingPIDController = new PIDController(0,0,0);
 
@@ -39,6 +41,7 @@ public class Follower implements IRobotModule {
     public Follower(MecanumDrive drive, Localizer localizer){
         this.drive = drive;
         this.localizer = localizer;
+        this.predictiveLocalizer = new PredictiveLocalizer(localizer);
     }
 
     public void setTrajectory(Trajectory newTrajectory, double PIDThreshold){
@@ -57,6 +60,7 @@ public class Follower implements IRobotModule {
     }
 
     public Vector tangentVelocityVector = new Vector();
+    public Vector predictedTangentVelocityVector = new Vector();
     public Vector driveVector = new Vector();
     public Vector correctingVector = new Vector();
 
@@ -67,6 +71,8 @@ public class Follower implements IRobotModule {
         if(trajectory == null) return;
         if(pid) return;
 
+        predictiveLocalizer.update();
+
         if(trajectory.getLength() - trajectory.getLengthAt(currentFollowedPoint) <= drive.getLocalizer().glideDelta.getMagnitude()){
             pid = true;
             drive.setRunMode(MecanumDrive.RunMode.PID);
@@ -74,25 +80,27 @@ public class Follower implements IRobotModule {
         }
 
         Pose currentPose = localizer.getPoseEstimate();
+        Pose predictedPose = predictiveLocalizer.getPoseEstimate();
 
         currentFollowedPoint = trajectory.getFollowedPoint(currentPose, currentFollowedPoint);
+        predictedFollowedPoint = trajectory.getFollowedPoint(currentPose, currentFollowedPoint);
 
         tangentVelocityVector = trajectory.getTangentVelocity(currentFollowedPoint).scaledBy(followingCoefficient);
+        predictedTangentVelocityVector = trajectory.getTangentVelocity(predictedFollowedPoint).scaledBy(followingCoefficient);
 
         Pose trajectoryPose = trajectory.getPose(currentFollowedPoint);
 
         correctionPIDCoefficients = MecanumDrive.translationalPID;
         correctionPID.setPID(correctionPIDCoefficients.p, correctionPIDCoefficients.i, correctionPIDCoefficients.d);
 
-        correctingVector = new Vector(trajectoryPose.getX() - currentPose.getX(), trajectoryPose.getY() - currentPose.getY(), 0);
+        correctingVector = new Vector(predictedPose.getX() - currentPose.getX(), predictedPose.getY() - currentPose.getY(), 0);
         double correctionPower = correctionPID.calculate(-correctingVector.getMagnitude(),0);
         correctingVector.scaleToMagnitude(correctionPower);
         correctingVector.scaleBy(correctionCoefficient);
-//        correctingVector = new Vector(correctingVector.getX(), correctingVector.getY(), 0);
 
-        Vector centripetalCorrectionVector = new Vector(Math.cos(Math.atan2(tangentVelocityVector.getY(), tangentVelocityVector.getX()) + PI/2.0),
-                Math.sin(Math.atan2(tangentVelocityVector.getY(), tangentVelocityVector.getX()) + PI/2.0))
-                .scaledBy(trajectory.getCurvature(currentFollowedPoint) * centripetalCorrectionCoefficient);
+        Vector centripetalCorrectionVector = new Vector(Math.cos(Math.atan2(predictedTangentVelocityVector.getY(), predictedTangentVelocityVector.getX()) + PI/2.0),
+                Math.sin(Math.atan2(predictedTangentVelocityVector.getY(), predictedTangentVelocityVector.getX()) + PI/2.0))
+                .scaledBy(trajectory.getCurvature(predictedFollowedPoint) * centripetalCorrectionCoefficient);
 
         timer.reset();
 
@@ -107,10 +115,6 @@ public class Follower implements IRobotModule {
         driveVector = tangentVelocityVector.plus(correctingVector).plus(centripetalCorrectionVector).plus(turningVector);
 
         drive.setTargetVector(tangentVelocityVector.plus(turningVector).plus(centripetalCorrectionVector).plus(correctingVector));
-//        drive.setTargetVector(tangentVelocityVector);
-//        drive.setTargetVector(correctingVector);
-//        drive.setTargetVector(centripetalCorrectionVector);
-//        drive.setTargetVector(turningVector);
     }
 
 

@@ -54,25 +54,28 @@ public class TestFieldVersatilityOpMode extends TestOpMode {
                 red = value;
             }
         });
+
     }
+
     public double loops = 0;
 
     @Override
     protected void loop() throws InterruptedException {
-
-        //draw the field overlay - supply false if we want to suppress the default field image
-        //TelemetryPacket packet = new TelemetryPacket(false);
         TelemetryPacket packet = new TelemetryPacket();
 
-            if(loops<2*Math.PI) {
-                    robotPos.add(new GPose(10 * loops, 10 * Math.cos(loops), loops));
-            }
-                packet.fieldOverlay().strokeActualPath(robotPos);
+        if (loops < Math.PI * 3) {
+            robotPos.add(new GPose(loops * 30-24*3, Math.sin(loops) * 10, loops));
+        }
+        GPose funny = new GPose(loops * 30-24*3-12, Math.sin(loops) * 10+10, loops);
+        packet.fieldOverlay()
+                .strokeActualPath(robotPos)
+                .setStroke("#42f54b")
+                .strokeRobot(funny);
 
 
         dashboard.sendTelemetryPacket(packet);
         Thread.sleep(10);
-        loops+=0.01;
+        loops += 0.005;
     }
 
 }

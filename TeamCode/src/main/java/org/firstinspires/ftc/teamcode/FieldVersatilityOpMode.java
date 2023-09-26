@@ -152,7 +152,7 @@ public class FieldVersatilityOpMode extends LinearOpMode {
                 .fillText("15 deg CC", bx - 10, by, "8px Arial", Math.toRadians(90 - 15), false)
                 .setAlpha(.25)
                 //you can draw multiple images and can rotate them around a specified pivot point, and draw them in the current transform instead of the page frame
-                .drawImage("/dash/powerplay.png", 24, 24, 48, 48, angleAnim, 24, 24, false)
+                .drawImage("/dash/centerstage.png", 24, 24, 48, 48, angleAnim, 24, 24, false)
                 .setAlpha(1.0)
                 .fillText(TXTTEXT, TXTX, TXTY, TXTFONT, Math.toRadians(TXT_THETA_DEGREES), TXT_USE_PAGE_FRAME);
 

@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-
+import com.acmerobotics.dashboard.canvas.GPose;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
-import org.firstinspires.ftc.teamcode.*;
 
+@Config
 public class PredictiveLocalizer {
     public static double xDeceleration = 100, yDeceleration = 300;
     private Vector velocity = new Vector(0,0,0);

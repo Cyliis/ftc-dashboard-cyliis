@@ -57,7 +57,7 @@ public class Trajectory {
         ArrayList<GPose> ans = new ArrayList<>();
         while (start + eps < end) {
             ans.add(new GPose(
-            getPose(start).getX(), getPose(start).getY(),getPose(start).getHeading()
+                    getPose(start).getX(), getPose(start).getY(),getPose(start).getHeading()
             ));
             start += eps;
         }
@@ -108,4 +108,3 @@ public class Trajectory {
     }
 
 }
-
