@@ -81,11 +81,6 @@ public class Canvas {
         return this;
     }
 
-    public Canvas strokeDesiredPathArray(double[] xPoints, double[] yPoints) {
-        setStrokeWidth(1).setStroke("blue").strokePolyline(xPoints, yPoints);
-        return this;
-    }
-
     public Canvas strokeActualPath(ArrayList<GPose> p) {
 
         for (int i = 1; i < p.size(); i++)
