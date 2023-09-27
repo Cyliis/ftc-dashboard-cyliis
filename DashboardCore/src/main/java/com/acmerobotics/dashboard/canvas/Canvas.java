@@ -76,15 +76,24 @@ public class Canvas {
     }
 
     public Canvas strokeDesiredPath(ArrayList<GPose> p) {
-        for (int i = 1; i < p.size(); i++)
-            setStrokeWidth(1).setStroke("blue").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+        double[] dx = new double[p.size()];
+        double[] dy = new double[p.size()];
+        for (int i = 0; i < p.size(); i++) {
+            dx[i] = p.get(i).getX();
+            dy[i] = p.get(i).getY();
+        }
+        setStrokeWidth(1).setStroke("blue").strokePolyline(dx, dy);
         return this;
     }
 
     public Canvas strokeActualPath(ArrayList<GPose> p) {
-
-        for (int i = 1; i < p.size(); i++)
-            setStrokeWidth(1).setStroke("red").strokeLine(p.get(i - 1).getX(), p.get(i - 1).getY(), p.get(i).getX(), p.get(i).getY());
+        double[] dx = new double[p.size()];
+        double[] dy = new double[p.size()];
+        for (int i = 0; i < p.size(); i++) {
+            dx[i] = p.get(i).getX();
+            dy[i] = p.get(i).getY();
+        }
+        setStrokeWidth(1).setStroke("red").strokePolyline(dx, dy);
 
         GPose last = p.get(p.size() - 1);
         setStroke("#0099ff").strokeRobot(last);
