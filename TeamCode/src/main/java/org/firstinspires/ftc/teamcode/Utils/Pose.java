@@ -20,6 +20,10 @@ public class Pose {
         this(x, y, heading,defaultTolerance);
     }
 
+    public Pose(double x, double y){
+        this(x, y, 0,defaultTolerance);
+    }
+
     public Pose(){
         this(0,0,0,defaultTolerance);
     }

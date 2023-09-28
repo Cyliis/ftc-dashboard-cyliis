@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Utils.Vector;
 public class Follower implements IRobotModule {
 
 
-    public static double followingCoefficient = 1, correctionCoefficient = 1, centripetalCorrectionCoefficient = 21, headingPIDCoefficient = 1;
+    public static double followingCoefficient = 1, correctionCoefficient = 1, centripetalCorrectionCoefficient = .47, headingPIDCoefficient = 1;
     public static int segmentsPerUnit = 100;
 
     private final MecanumDrive drive;
@@ -64,14 +64,18 @@ public class Follower implements IRobotModule {
     public Vector driveVector = new Vector();
     public Vector correctingVector = new Vector();
 
+    private Pose currentPose = new Pose();
+
     ElapsedTime timer = new ElapsedTime();
+
+    public double velocity = 0;
 
     @Override
     public void update() {
+        predictiveLocalizer.update();
+
         if(trajectory == null) return;
         if(pid) return;
-
-        predictiveLocalizer.update();
 
         if(trajectory.getLength() - trajectory.getLengthAt(currentFollowedPoint) <= drive.getLocalizer().glideDelta.getMagnitude()){
             pid = true;
@@ -79,11 +83,15 @@ public class Follower implements IRobotModule {
             drive.setTargetPose(trajectory.getPose(1));
         }
 
-        Pose currentPose = localizer.getPoseEstimate();
+        velocity = new Vector(localizer.getPoseEstimate().getX() - currentPose.getX(), localizer.getPoseEstimate().getY() - currentPose.getY()).getMagnitude();
+        velocity /= timer.seconds();
+        timer.reset();
+
+        currentPose = localizer.getPoseEstimate();
         Pose predictedPose = predictiveLocalizer.getPoseEstimate();
 
         currentFollowedPoint = trajectory.getFollowedPoint(currentPose, currentFollowedPoint);
-        predictedFollowedPoint = trajectory.getFollowedPoint(currentPose, currentFollowedPoint);
+        predictedFollowedPoint = trajectory.getFollowedPoint(predictedPose, currentFollowedPoint);
 
         tangentVelocityVector = trajectory.getTangentVelocity(currentFollowedPoint).scaledBy(followingCoefficient);
         predictedTangentVelocityVector = trajectory.getTangentVelocity(predictedFollowedPoint).scaledBy(followingCoefficient);
@@ -93,16 +101,16 @@ public class Follower implements IRobotModule {
         correctionPIDCoefficients = MecanumDrive.translationalPID;
         correctionPID.setPID(correctionPIDCoefficients.p, correctionPIDCoefficients.i, correctionPIDCoefficients.d);
 
-        correctingVector = new Vector(predictedPose.getX() - currentPose.getX(), predictedPose.getY() - currentPose.getY(), 0);
+        correctingVector = new Vector(trajectoryPose.getX() - currentPose.getX(), trajectoryPose.getY() - currentPose.getY(), 0);
         double correctionPower = correctionPID.calculate(-correctingVector.getMagnitude(),0);
         correctingVector.scaleToMagnitude(correctionPower);
         correctingVector.scaleBy(correctionCoefficient);
 
         Vector centripetalCorrectionVector = new Vector(Math.cos(Math.atan2(predictedTangentVelocityVector.getY(), predictedTangentVelocityVector.getX()) + PI/2.0),
                 Math.sin(Math.atan2(predictedTangentVelocityVector.getY(), predictedTangentVelocityVector.getX()) + PI/2.0))
-                .scaledBy(trajectory.getCurvature(predictedFollowedPoint) * centripetalCorrectionCoefficient);
+                .scaledBy(trajectory.getCurvature(predictedFollowedPoint) * centripetalCorrectionCoefficient)
+                .scaledBy(velocity);
 
-        timer.reset();
 
         headingPIDController.setPID(MecanumDrive.headingPID.p, MecanumDrive.headingPID.i, MecanumDrive.headingPID.d);
         double headingDelta = trajectoryPose.getHeading() - currentPose.getHeading();

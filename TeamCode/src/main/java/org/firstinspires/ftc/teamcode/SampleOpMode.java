@@ -35,13 +35,20 @@ public class SampleOpMode extends LinearOpMode {
     FtcDashboard dash;
 
     CubicBezierTangentHeadingTrajectorySegment segment1 = new CubicBezierTangentHeadingTrajectorySegment(
-            new Pose(0, 0, 0),
-            new Pose(72, 0, 0),
-            new Pose(72, 0, 0),
-            new Pose(72, -48, -PI / 2)
+            new Pose(0,0),
+            new Pose(24,0),
+            new Pose(72,24),
+            new Pose(72,0)
+    );
+
+    CubicBezierTangentHeadingTrajectorySegment segment2 = new CubicBezierTangentHeadingTrajectorySegment(
+            segment1,
+            new Pose(0, -48),
+            new Pose(0,0,PI/2)
     );
 
     Trajectory lol = new TrajectoryBuilder(segment1)
+            .addSegment(segment2)
             .build();
 
     @Override
