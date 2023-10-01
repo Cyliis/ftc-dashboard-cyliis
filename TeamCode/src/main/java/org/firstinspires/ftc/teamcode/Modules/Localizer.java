@@ -3,37 +3,37 @@ package org.firstinspires.ftc.teamcode.Modules;
 import com.acmerobotics.dashboard.canvas.GPose;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.checker.units.qual.A;
-import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
+import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 import org.firstinspires.ftc.teamcode.Wrappers.CoolIMU;
-import org.firstinspires.ftc.teamcode.drive.FunnyLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.FunnyLocalizer;
 
 import java.util.ArrayList;
 
 @Config
 public class Localizer implements IRobotModule {
+
+    public static boolean ENABLED = true;
+
     protected Pose pose;
     private FunnyLocalizer localizer;
     public CoolIMU imu;
     private ArrayList<Pose> poses = new ArrayList<>();
 
-    public Localizer(HardwareMap hm, Pose initialPose) {
+    public Localizer(Hardware hardware, Pose initialPose) {
         this.pose = initialPose;
-        this.imu = new CoolIMU(hm);
-        this.localizer = new FunnyLocalizer(hm, imu);
+        this.imu = hardware.imu;
+        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch3, hardware.imu);
         localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
     }
 
-    public Localizer(HardwareMap hm, DcMotorEx parallelEncoder, DcMotorEx perpendicularEncoder, Pose initialPose) {
-        this.pose = initialPose;
-        this.imu = new CoolIMU(hm);
-        this.localizer = new FunnyLocalizer(parallelEncoder, perpendicularEncoder, imu);
-        localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
+    public Localizer(Hardware hardware) {
+        this.pose = new Pose();
+        this.imu = hardware.imu;
+        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch3, hardware.imu);
+        localizer.setPoseEstimate(new Pose2d());
     }
 
     public void setPose(Pose pose) {
@@ -54,14 +54,11 @@ public class Localizer implements IRobotModule {
 
     @Override
     public void update() {
+        if(!ENABLED) return;
+
         localizer.update();
         Pose2d pose2d = localizer.getPoseEstimate();
         pose = new Pose(pose2d.getX(), pose2d.getY(), pose2d.getHeading());
         poses.add(pose);
-    }
-
-    @Override
-    public void emergencyStop() {
-
     }
 }

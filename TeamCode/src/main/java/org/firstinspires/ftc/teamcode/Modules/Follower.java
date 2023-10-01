@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.Trajectory;
-import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
+import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
 @Config
 public class Follower implements IRobotModule {
+
+    public static boolean ENABLED = true;
 
 
     public static double followingCoefficient = 1, correctionCoefficient = 1, centripetalCorrectionCoefficient = .47, headingPIDCoefficient = 1;
@@ -72,6 +74,8 @@ public class Follower implements IRobotModule {
 
     @Override
     public void update() {
+        if(!ENABLED) return;
+
         predictiveLocalizer.update();
 
         if(trajectory == null) return;
@@ -123,11 +127,5 @@ public class Follower implements IRobotModule {
         driveVector = tangentVelocityVector.plus(correctingVector).plus(centripetalCorrectionVector).plus(turningVector);
 
         drive.setTargetVector(tangentVelocityVector.plus(turningVector).plus(centripetalCorrectionVector).plus(correctingVector));
-    }
-
-
-    @Override
-    public void emergencyStop() {
-
     }
 }

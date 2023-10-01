@@ -11,22 +11,22 @@ public class CoolServo {
     private AsymmetricMotionProfile profile;
     private boolean isProfiled = false;
 
-    public CoolServo(HardwareMap hm, String name, boolean reversed, double initialPosition){
-        servo = hm.get(Servo.class, name);
+    public CoolServo(Servo servo, boolean reversed, double initialPosition){
+        this.servo = servo;
         if(reversed) servo.setDirection(Servo.Direction.REVERSE);
         setInitialPosition(initialPosition);
     }
 
-    public CoolServo(HardwareMap hm, String name, boolean reversed, double profileMaxVelocity, double profileAcceleration, double profileDeceleration, double initialPosition){
-        servo = hm.get(Servo.class, name);
+    public CoolServo(Servo servo, boolean reversed, double profileMaxVelocity, double profileAcceleration, double profileDeceleration, double initialPosition){
+        this.servo = servo;
         if(reversed) servo.setDirection(Servo.Direction.REVERSE);
         profile = new AsymmetricMotionProfile(profileMaxVelocity, profileAcceleration, profileDeceleration);
         isProfiled = true;
         setInitialPosition(initialPosition);
     }
 
-    public CoolServo(HardwareMap hm, String name, boolean reversed, double profileMaxVelocity, double profileAcceleration, double initialPosition){
-        this(hm, name, reversed, profileMaxVelocity, profileAcceleration, profileAcceleration, initialPosition);
+    public CoolServo(Servo servo, boolean reversed, double profileMaxVelocity, double profileAcceleration, double initialPosition){
+        this(servo, reversed, profileMaxVelocity, profileAcceleration, profileAcceleration, initialPosition);
     }
 
     private double cachedPosition, targetPosition;

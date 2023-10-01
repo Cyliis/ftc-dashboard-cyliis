@@ -7,8 +7,8 @@ public class CoolDigitalSensor {
 
     private DigitalChannel sensor;
 
-    public CoolDigitalSensor(HardwareMap hm, String name){
-        this.sensor = hm.get(DigitalChannel.class, name);
+    public CoolDigitalSensor(DigitalChannel sensor){
+        this.sensor = sensor;
         this.sensor.setMode(DigitalChannel.Mode.INPUT);
     }
 

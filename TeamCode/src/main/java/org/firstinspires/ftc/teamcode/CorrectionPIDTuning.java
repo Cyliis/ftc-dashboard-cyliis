@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Modules.Follower;
 import org.firstinspires.ftc.teamcode.Modules.Localizer;
 import org.firstinspires.ftc.teamcode.Modules.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.CubicBezierTrajectorySegment;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.Trajectory;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.TrajectoryBuilder;
@@ -20,6 +21,8 @@ import org.firstinspires.ftc.teamcode.Utils.Pose;
 @Config
 @Autonomous(name = "Correction PID Tuning")
 public class CorrectionPIDTuning extends LinearOpMode {
+
+    Hardware hardware;
 
     MecanumDrive drive;
     Localizer localizer;
@@ -33,8 +36,10 @@ public class CorrectionPIDTuning extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, dash.getTelemetry());
 
-        localizer = new Localizer(hardwareMap, new Pose());
-        drive = new MecanumDrive(hardwareMap, localizer, MecanumDrive.RunMode.PID);
+        hardware = new Hardware(hardwareMap);
+
+        localizer = new Localizer(hardware, new Pose());
+        drive = new MecanumDrive(hardware, localizer, MecanumDrive.RunMode.PID);
 
         waitForStart();
 

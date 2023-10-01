@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Modules.Follower;
 import org.firstinspires.ftc.teamcode.Modules.Localizer;
 import org.firstinspires.ftc.teamcode.Modules.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.CubicBezierTangentHeadingTrajectorySegment;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.Trajectory;
 import org.firstinspires.ftc.teamcode.TrajectoryStuff.TrajectoryBuilder;
@@ -27,6 +28,8 @@ import java.util.List;
 @TeleOp(name = "Sample")
 public class SampleOpMode extends LinearOpMode {
     List<LynxModule> hubs;
+
+    Hardware hardware;
 
     MecanumDrive drive;
     Follower follower;
@@ -58,8 +61,10 @@ public class SampleOpMode extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, dash.getTelemetry());
 
-        drive = new MecanumDrive(hardwareMap, localizer);
-        localizer = new Localizer(hardwareMap, drive.frontLeft.motor, hardwareMap.get(DcMotorEx.class, "lift2"), new Pose());
+        hardware = new Hardware(hardwareMap);
+
+        drive = new MecanumDrive(hardware, localizer);
+        localizer = new Localizer(hardware,  new Pose());
         drive.setLocalizer(localizer);
         follower = new Follower(drive, localizer);
         follower.setTrajectory(lol, 2);
@@ -72,7 +77,7 @@ public class SampleOpMode extends LinearOpMode {
         waitForStart();
 
         localizer.imu.startIMUThread(this);
-        int loop = 0;
+
         ElapsedTime loopTimer = new ElapsedTime();
         loopTimer.startTime();
 

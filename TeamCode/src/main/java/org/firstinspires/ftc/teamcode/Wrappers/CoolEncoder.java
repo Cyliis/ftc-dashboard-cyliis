@@ -11,24 +11,13 @@ public class CoolEncoder {
 
     private static int offset;
 
-    public CoolEncoder(HardwareMap hm, String hmName, boolean reversed){
-        this.motor = hm.get(DcMotorEx.class, hmName);
-        this.reversed = reversed;
-    }
-
-    public CoolEncoder(HardwareMap hm, String hmName){
-        this.motor = hm.get(DcMotorEx.class, hmName);
-        this.reversed = false;
-    }
-
     public CoolEncoder(DcMotorEx motor, boolean reversed){
         this.motor = motor;
         this.reversed = reversed;
     }
 
     public CoolEncoder(DcMotorEx motor){
-        this.motor = motor;
-        this.reversed = false;
+        this(motor,false);
     }
 
     public int getCurrentPosition(){

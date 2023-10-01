@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import static java.lang.Math.PI;
-import static java.lang.Math.pow;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -9,19 +8,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.CoolMotor;
-import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
+import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
 @Config
 public class MecanumDrive implements IRobotModule {
 
+    public static boolean ENABLED = true;
+
     private PredictiveLocalizer localizer;
 
     public final CoolMotor frontLeft, frontRight, backLeft, backRight;
-    public static String frontLeftMotorName = "mfl", frontRightMotorName = "mfr",
-            backLeftMotorName = "mbl", backRightMotorName = "mbr";
     public static boolean frontLeftMotorReversed = false, frontRightMotorReversed = true, backLeftMotorReversed = false, backRightMotorReversed = true;
 
     public static PIDCoefficients translationalPID = new PIDCoefficients(0.15,0.05,0.02),
@@ -36,12 +36,12 @@ public class MecanumDrive implements IRobotModule {
 
     private RunMode runMode;
 
-    public MecanumDrive(HardwareMap hm, Localizer localizer, RunMode runMode){
+    public MecanumDrive(Hardware hardware, Localizer localizer, RunMode runMode){
         this.localizer = new PredictiveLocalizer(localizer);
-        frontLeft = new CoolMotor(hm, frontLeftMotorName, CoolMotor.RunMode.RUN, frontLeftMotorReversed);
-        frontRight = new CoolMotor(hm, frontRightMotorName, CoolMotor.RunMode.RUN, frontRightMotorReversed);
-        backLeft = new CoolMotor(hm, backLeftMotorName, CoolMotor.RunMode.RUN, backLeftMotorReversed);
-        backRight = new CoolMotor(hm, backRightMotorName, CoolMotor.RunMode.RUN, backRightMotorReversed);
+        frontLeft = new CoolMotor(hardware.mch0, CoolMotor.RunMode.RUN, frontLeftMotorReversed);
+        frontRight = new CoolMotor(hardware.mch1, CoolMotor.RunMode.RUN, frontRightMotorReversed);
+        backLeft = new CoolMotor(hardware.mch2, CoolMotor.RunMode.RUN, backLeftMotorReversed);
+        backRight = new CoolMotor(hardware.mch3, CoolMotor.RunMode.RUN, backRightMotorReversed);
 
         frontLeft.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
         frontRight.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -51,8 +51,8 @@ public class MecanumDrive implements IRobotModule {
         this.runMode = runMode;
     }
 
-    public MecanumDrive(HardwareMap hm, Localizer localizer){
-        this(hm, localizer, RunMode.Vector);
+    public MecanumDrive(Hardware hardware, Localizer localizer){
+        this(hardware, localizer, RunMode.Vector);
     }
 
     public void setLocalizer(Localizer localizer){
@@ -139,6 +139,8 @@ public class MecanumDrive implements IRobotModule {
 
     @Override
     public void update() {
+        if(!ENABLED) return;
+
         localizer.update();
         updatePowerVector();
         updateMotors();

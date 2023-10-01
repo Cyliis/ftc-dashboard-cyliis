@@ -27,7 +27,6 @@ public class Complex {
     }
     @Override
     public String toString(){
-//        return "(" + String.valueOf(real) + "," + String.valueOf(imag) + ")";
-        return String.valueOf(real) + ", ";
+        return "(" + String.valueOf(real) + "," + String.valueOf(imag) + ")";
     }
 }

@@ -1,0 +1,94 @@
+package org.firstinspires.ftc.teamcode.Modules;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
+import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
+import org.firstinspires.ftc.teamcode.Robot.IStateBasedModule;
+import org.firstinspires.ftc.teamcode.Wrappers.CoolServo;
+
+@Config
+public class LeftGripper implements IStateBasedModule, IRobotModule {
+
+    public static boolean ENABLED = false;
+
+    private final CoolServo servo;
+    public static boolean reversedServo = false;
+
+    public static double openPosition = 0.5, closedPosition = 0.5;
+
+    public static double profileMaxVelocity = 1, profileAcceleration = 1;
+
+    public enum State{
+        OPEN(openPosition), OPENING(openPosition), CLOSED(openPosition), CLOSING(openPosition);
+
+        public double position;
+
+        State(double position){
+            this.position = position;
+        }
+    }
+
+    private void updateStateValues(){
+        State.OPEN.position = openPosition;
+        State.OPENING.position = openPosition;
+        State.CLOSED.position = closedPosition;
+        State.CLOSING.position = closedPosition;
+    }
+
+    private State state;
+
+    private final ElapsedTime timer = new ElapsedTime();
+
+    public State getState(){
+        return state;
+    }
+
+    public void setState(State newState){
+        if(newState == state) return;
+        this.state = newState;
+        timer.reset();
+    }
+
+    public LeftGripper(Hardware hardware, State initialState){
+        servo = new CoolServo(hardware.sch0, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
+        timer.startTime();
+        setState(initialState);
+    }
+
+    @Override
+    public void initUpdate() {
+        update();
+    }
+
+    @Override
+    public void update() {
+        if(!ENABLED) return;
+
+        updateStateValues();
+        updateState();
+        updateHardware();
+    }
+
+    @Override
+    public void updateState() {
+        switch (state){
+            case OPENING:
+                if(servo.getTimeToMotionEnd() == 0)
+                    setState(State.OPEN);
+                break;
+            case CLOSING:
+                if(servo.getTimeToMotionEnd() == 0)
+                    setState(State.CLOSED);
+                break;
+        }
+    }
+
+    @Override
+    public void updateHardware() {
+        servo.setPosition(state.position);
+
+        servo.update();
+    }
+}

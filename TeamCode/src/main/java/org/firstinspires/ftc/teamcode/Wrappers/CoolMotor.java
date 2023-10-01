@@ -22,8 +22,8 @@ public class CoolMotor {
 
     private RunMode runMode;
 
-    public CoolMotor(HardwareMap hm, String name, RunMode runMode, boolean reversed){
-        this.motor = hm.get(DcMotorEx.class, name);
+    public CoolMotor(DcMotorEx motor, RunMode runMode, boolean reversed){
+        this.motor = motor;
         MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         motor.setMotorType(motorConfigurationType);
@@ -32,16 +32,16 @@ public class CoolMotor {
         this.runMode = runMode;
     }
 
-    public CoolMotor(HardwareMap hm, String name){
-        this(hm, name, RunMode.RUN, false);
+    public CoolMotor(DcMotorEx motor, String name){
+        this(motor, RunMode.RUN, false);
     }
 
-    public CoolMotor(HardwareMap hm, String name, RunMode runMode){
-        this(hm, name, runMode, false);
+    public CoolMotor(DcMotorEx motor, RunMode runMode){
+        this(motor, runMode, false);
     }
 
-    public CoolMotor(HardwareMap hm, String name, boolean reversed){
-        this(hm, name, RunMode.RUN, false);
+    public CoolMotor(DcMotorEx motor, boolean reversed){
+        this(motor, RunMode.RUN, false);
     }
 
     public void setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior zeroPowerBehaviour){
