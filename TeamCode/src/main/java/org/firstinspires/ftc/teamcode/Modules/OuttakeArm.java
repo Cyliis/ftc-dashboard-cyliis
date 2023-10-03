@@ -21,12 +21,19 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
     public static double profileMaxVelocity = 1, profileAcceleration = 1, profileDeceleration = 1;
 
     public enum State{
-        INTAKE(intakePosition), GOING_INTAKE(intakePosition), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition);
+        INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE);
 
         public double position;
+        public final State nextState;
 
         State(double position){
             this.position = position;
+            this.nextState = this;
+        }
+
+        State(double position, State nextState){
+            this.position = position;
+            this.nextState = nextState;
         }
     }
 
@@ -69,16 +76,7 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
 
     @Override
     public void updateState() {
-        switch (state){
-            case GOING_INTAKE:
-                if(leftServo.getTimeToMotionEnd() == 0)
-                    setState(State.INTAKE);
-                break;
-            case GOING_OUTTAKE:
-                if(leftServo.getTimeToMotionEnd() == 0)
-                    setState(State.OUTTAKE);
-                break;
-        }
+        if(leftServo.getTimeToMotionEnd() == 0)state = state.nextState;
     }
 
     @Override

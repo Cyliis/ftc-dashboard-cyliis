@@ -24,9 +24,16 @@ public class RightGripper implements IStateBasedModule, IRobotModule {
         OPEN(openPosition), OPENING(openPosition), CLOSED(openPosition), CLOSING(openPosition);
 
         public double position;
+        public final State nextState;
 
         State(double position){
             this.position = position;
+            this.nextState = this;
+        }
+
+        State(double position, State nextState){
+            this.position = position;
+            this.nextState = nextState;
         }
     }
 
@@ -73,16 +80,7 @@ public class RightGripper implements IStateBasedModule, IRobotModule {
 
     @Override
     public void updateState() {
-        switch (state){
-            case OPENING:
-                if(servo.getTimeToMotionEnd() == 0)
-                    setState(State.OPEN);
-                break;
-            case CLOSING:
-                if(servo.getTimeToMotionEnd() == 0)
-                    setState(State.CLOSED);
-                break;
-        }
+        if(servo.getTimeToMotionEnd() == 0) state = state.nextState;
     }
 
     @Override

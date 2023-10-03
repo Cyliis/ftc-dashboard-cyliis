@@ -11,7 +11,7 @@ public class LowPassFilter {
     }
 
     public double getValue(double rawValue){
-        double newValue = lastValue * t + (1.0-t) * rawValue;
+        double newValue = lastValue * (1.0-t) + t * rawValue;
         this.lastValue = newValue;
         return newValue;
     }

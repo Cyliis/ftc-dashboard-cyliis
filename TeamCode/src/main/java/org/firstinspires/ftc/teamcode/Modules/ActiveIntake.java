@@ -22,9 +22,16 @@ public class ActiveIntake implements IStateBasedModule, IRobotModule {
         RUNNING(runningPower), IDLE(0);
 
         public double power;
+        public final State nextState;
 
         State(double power){
             this.power = power;
+            nextState = this;
+        }
+
+        State(double power, State nextState){
+            this.power = power;
+            this.nextState = nextState;
         }
     }
 

@@ -21,12 +21,19 @@ public class LeftGripper implements IStateBasedModule, IRobotModule {
     public static double profileMaxVelocity = 1, profileAcceleration = 1;
 
     public enum State{
-        OPEN(openPosition), OPENING(openPosition), CLOSED(openPosition), CLOSING(openPosition);
+        OPEN(openPosition), OPENING(openPosition, OPEN), CLOSED(openPosition), CLOSING(openPosition, CLOSED);
 
         public double position;
+        public final State nextState;
 
         State(double position){
             this.position = position;
+            this.nextState = this;
+        }
+
+        State(double position, State nextState){
+            this.position = position;
+            this.nextState = nextState;
         }
     }
 
@@ -73,16 +80,7 @@ public class LeftGripper implements IStateBasedModule, IRobotModule {
 
     @Override
     public void updateState() {
-        switch (state){
-            case OPENING:
-                if(servo.getTimeToMotionEnd() == 0)
-                    setState(State.OPEN);
-                break;
-            case CLOSING:
-                if(servo.getTimeToMotionEnd() == 0)
-                    setState(State.CLOSED);
-                break;
-        }
+        if(servo.getTimeToMotionEnd() == 0) state = state.nextState;
     }
 
     @Override
