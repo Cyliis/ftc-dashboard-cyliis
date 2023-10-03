@@ -71,6 +71,8 @@ public class Lift implements IStateBasedModule, IRobotModule {
 
     @Override
     public void update() {
+        if(!ENABLED) return;
+
         updateStateValues();
         updateState();
         updateHardware();
