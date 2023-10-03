@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolMotor;
 @Config
 public class Lift implements IStateBasedModule, IRobotModule {
 
+    public static boolean ENABLED = false;
+
     CoolMotor leftMotor, rightMotor;
     public static boolean leftMotorReversed = false, rightMotorReversed = true;
     CoolEncoder encoder;
