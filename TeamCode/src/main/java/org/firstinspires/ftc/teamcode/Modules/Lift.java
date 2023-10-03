@@ -20,7 +20,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
     CoolEncoder encoder;
     public static boolean encoderReversed = false;
 
-    public static int groundPos = 0, firstLevel = 50, increment = 50, level = 0, positionThresh = 2;
+    public static int groundPos = 0, firstLevel = 50, increment = 50, level = 0, positionThresh = 2, passthroughPosition = 100;
 
     public static double resetPower = -0.5, resetVelocityThresh = 1;
 
@@ -28,7 +28,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
     public static double ff1 = 0, ff2 = 0;
 
     public enum State{
-        DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING),
+        DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
         UP(groundPos + firstLevel + increment * (level - 1)), GOING_UP(groundPos + firstLevel + increment * (level - 1), UP);
 
         public int position;
@@ -51,8 +51,9 @@ public class Lift implements IStateBasedModule, IRobotModule {
         return state;
     }
 
-    public void setState(State state){
-        this.state = state;
+    public void setState(State newState){
+        if(state == newState) return;
+        state = newState;
     }
 
     private void updateStateValues(){

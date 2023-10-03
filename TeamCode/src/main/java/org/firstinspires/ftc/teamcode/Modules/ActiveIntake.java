@@ -19,7 +19,7 @@ public class ActiveIntake implements IStateBasedModule, IRobotModule {
     public static double runningPower = 1;
 
     public enum State{
-        RUNNING(runningPower), IDLE(0);
+        RUNNING(runningPower), IDLE(0), REVERSE(-runningPower);
 
         public double power;
         public final State nextState;
