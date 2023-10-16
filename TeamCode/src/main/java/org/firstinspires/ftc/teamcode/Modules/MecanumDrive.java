@@ -5,7 +5,6 @@ import static java.lang.Math.PI;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -29,6 +28,10 @@ public class MecanumDrive implements IRobotModule {
     public final PIDController tpid= new PIDController(0,0,0), hpid = new PIDController(1.5,0.2,0.05);
 
     public static double lateralMultiplier = 1.2;
+
+    public double overallMultiplier = 1;
+    public static double fastMultiplier = 1;
+    public static double slowMultiplier = 0.5;
 
     public enum RunMode{
         PID, Vector
@@ -118,7 +121,7 @@ public class MecanumDrive implements IRobotModule {
                 break;
         }
         if(Math.abs(powerVector.getX()) + Math.abs(powerVector.getY()) + Math.abs(powerVector.getZ()) > 1)
-            powerVector.scaleToMagnitude(1);
+            powerVector.scaleToMagnitude(overallMultiplier);
     }
 
     private void updateMotors(){

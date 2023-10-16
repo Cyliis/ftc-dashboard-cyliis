@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode.TrajectoryStuff;
 
 import com.acmerobotics.dashboard.canvas.GPose;
 
-import org.firstinspires.ftc.teamcode.Modules.Follower;
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Trajectory {
 
