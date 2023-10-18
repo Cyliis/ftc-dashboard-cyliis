@@ -59,7 +59,8 @@ public class RightGripper implements IStateBasedModule, IRobotModule {
     }
 
     public RightGripper(Hardware hardware, State initialState){
-        servo = new CoolServo(hardware.sch0, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
+        if(!ENABLED) servo = null;
+        else servo = new CoolServo(hardware.sch5, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
         timer.startTime();
         setState(initialState);
     }
@@ -74,8 +75,8 @@ public class RightGripper implements IStateBasedModule, IRobotModule {
         if(!ENABLED) return;
 
         updateStateValues();
-        updateState();
         updateHardware();
+        updateState();
     }
 
     @Override

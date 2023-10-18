@@ -11,14 +11,14 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolServo;
 @Config
 public class Pitch implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     private final CoolServo servo;
     public static boolean reversedServo = false;
 
-    public static double intakePosition = 0.5, outtakePosition = 0.5;
+    public static double intakePosition = 0.63, outtakePosition = 0.285;
 
-    public static double profileMaxVelocity = 1, profileAcceleration = 1;
+    public static double profileMaxVelocity = 2.2, profileAcceleration = 1;
 
     public enum State{
         INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE);
@@ -59,7 +59,8 @@ public class Pitch implements IStateBasedModule, IRobotModule {
     }
 
     public Pitch(Hardware hardware, State initialState){
-        servo = new CoolServo(hardware.sch0, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
+        if(!ENABLED) servo = null;
+        else servo = new CoolServo(hardware.seh0, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
         timer.startTime();
         setState(initialState);
     }
@@ -74,8 +75,8 @@ public class Pitch implements IStateBasedModule, IRobotModule {
         if(!ENABLED) return;
 
         updateStateValues();
-        updateState();
         updateHardware();
+        updateState();
     }
 
     @Override

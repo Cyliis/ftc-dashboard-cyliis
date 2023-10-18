@@ -74,6 +74,13 @@ public class TeleOp extends LinearOpMode {
             drive.update();
 
             robotModules.update();
+
+            robotModules.telemetry(telemetry);
+
+            telemetry.addData("Hz", 1.0/loopTimer.seconds());
+            loopTimer.reset();
+
+            telemetry.update();
         }
     }
 }

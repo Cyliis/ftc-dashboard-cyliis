@@ -11,17 +11,18 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolServo;
 @Config
 public class OuttakeArm implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     public final CoolServo leftServo, rightServo;
     public static boolean reversedLeftServo = false, reversedRightServo = true;
 
-    public static double intakePosition = 0.5, outtakePosition = 0.5;
+    public static double intakePosition = 0.2, outtakePosition = 0.8, passthroughPosition = 0.05;
 
-    public static double profileMaxVelocity = 1, profileAcceleration = 1, profileDeceleration = 1;
+    public static double profileMaxVelocity = 2.2, profileAcceleration = 1, profileDeceleration = 1;
 
     public enum State{
-        INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE);
+        INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE),
+        PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH);
 
         public double position;
         public final State nextState;
@@ -42,6 +43,8 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
         State.GOING_INTAKE.position = intakePosition;
         State.OUTTAKE.position = outtakePosition;
         State.GOING_OUTTAKE.position = outtakePosition;
+        State.PASSTHROUGH.position = passthroughPosition;
+        State.GOING_PASSTHROUGH.position = passthroughPosition;
     }
 
     private State state;
@@ -59,8 +62,10 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
     }
 
     public OuttakeArm(Hardware hardware, State initialState){
-        leftServo = new CoolServo(hardware.sch0, reversedLeftServo, profileMaxVelocity, profileAcceleration, profileDeceleration, initialState.position);
-        rightServo = new CoolServo(hardware.sch0, reversedRightServo, profileMaxVelocity, profileAcceleration, profileDeceleration, initialState.position);
+        if(!ENABLED) leftServo = null;
+        else leftServo = new CoolServo(hardware.seh2, reversedLeftServo, profileMaxVelocity, profileAcceleration, profileDeceleration, initialState.position);
+        if(!ENABLED) rightServo = null;
+        else rightServo = new CoolServo(hardware.seh4, reversedRightServo, profileMaxVelocity, profileAcceleration, profileDeceleration, initialState.position);
         timer.startTime();
         setState(initialState);
     }
@@ -70,8 +75,8 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
         if(!ENABLED) return;
 
         updateStateValues();
-        updateState();
         updateHardware();
+        updateState();
     }
 
     @Override

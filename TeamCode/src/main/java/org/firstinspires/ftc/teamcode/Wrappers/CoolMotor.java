@@ -32,7 +32,7 @@ public class CoolMotor {
         this.runMode = runMode;
     }
 
-    public CoolMotor(DcMotorEx motor, String name){
+    public CoolMotor(DcMotorEx motor){
         this(motor, RunMode.RUN, false);
     }
 

@@ -29,11 +29,12 @@ public class CoolServo {
         this(servo, reversed, profileMaxVelocity, profileAcceleration, profileAcceleration, initialPosition);
     }
 
-    private double cachedPosition, targetPosition;
+    public double cachedPosition, targetPosition;
 
     private void setInitialPosition(double pos){
         cachedPosition = pos;
         targetPosition = pos;
+        if(isProfiled)profile.setMotion(pos, pos, 0);
         servo.setPosition(pos);
     }
 
@@ -44,8 +45,8 @@ public class CoolServo {
     }
 
     public void update(){
+        if(isProfiled) profile.update();
         if(isProfiled && cachedPosition != profile.getPosition()) {
-            profile.update();
             cachedPosition = profile.getPosition();
             servo.setPosition(cachedPosition);
         }

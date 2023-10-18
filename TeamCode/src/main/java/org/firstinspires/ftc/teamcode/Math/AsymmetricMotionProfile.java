@@ -96,7 +96,7 @@ public class AsymmetricMotionProfile {
     }
 
     public double getTimeToMotionEnd(){
-        return Math.min(0,t - timer.seconds());
+        return Math.max(0,t - timer.seconds());
     }
 
     public void telemetry(Telemetry telemetry){

@@ -18,21 +18,21 @@ public class Localizer implements IRobotModule {
     public static boolean ENABLED = true;
 
     protected Pose pose;
-    private FunnyLocalizer localizer;
+    private final FunnyLocalizer localizer;
     public CoolIMU imu;
-    private ArrayList<Pose> poses = new ArrayList<>();
+    private final ArrayList<Pose> poses = new ArrayList<>();
 
     public Localizer(Hardware hardware, Pose initialPose) {
         this.pose = initialPose;
         this.imu = hardware.imu;
-        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch3, hardware.imu);
+        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch0, hardware.imu);
         localizer.setPoseEstimate(new Pose2d(initialPose.getX(), initialPose.getY(), initialPose.getHeading()));
     }
 
     public Localizer(Hardware hardware) {
         this.pose = new Pose();
         this.imu = hardware.imu;
-        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch3, hardware.imu);
+        this.localizer = new FunnyLocalizer(hardware.mch0, hardware.mch0, hardware.imu);
         localizer.setPoseEstimate(new Pose2d());
     }
 

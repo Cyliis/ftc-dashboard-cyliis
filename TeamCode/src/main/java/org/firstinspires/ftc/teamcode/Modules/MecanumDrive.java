@@ -16,18 +16,18 @@ import org.firstinspires.ftc.teamcode.Utils.Vector;
 @Config
 public class MecanumDrive implements IRobotModule {
 
-    public static boolean ENABLED = true;
+    public static boolean ENABLED = false;
 
     private PredictiveLocalizer localizer;
 
     public final CoolMotor frontLeft, frontRight, backLeft, backRight;
-    public static boolean frontLeftMotorReversed = false, frontRightMotorReversed = true, backLeftMotorReversed = false, backRightMotorReversed = true;
+    public static boolean frontLeftMotorReversed = true, frontRightMotorReversed = false, backLeftMotorReversed = false, backRightMotorReversed = true;
 
     public static PIDCoefficients translationalPID = new PIDCoefficients(0.15,0.05,0.02),
             headingPID = new PIDCoefficients(2,0.3,0.2);
     public final PIDController tpid= new PIDController(0,0,0), hpid = new PIDController(1.5,0.2,0.05);
 
-    public static double lateralMultiplier = 1.2;
+    public static double lateralMultiplier = 1.1;
 
     public double overallMultiplier = 1;
     public static double fastMultiplier = 1;
@@ -40,6 +40,16 @@ public class MecanumDrive implements IRobotModule {
     private RunMode runMode;
 
     public MecanumDrive(Hardware hardware, Localizer localizer, RunMode runMode){
+        if(!ENABLED) {
+            this.localizer = null;
+            frontLeft = null;
+            frontRight = null;
+            backLeft = null;
+            backRight = null;
+            this.runMode = runMode;
+            return;
+        }
+
         this.localizer = new PredictiveLocalizer(localizer);
         frontLeft = new CoolMotor(hardware.mch0, CoolMotor.RunMode.RUN, frontLeftMotorReversed);
         frontRight = new CoolMotor(hardware.mch1, CoolMotor.RunMode.RUN, frontRightMotorReversed);

@@ -16,7 +16,7 @@ public class Intake implements IStateBasedModule, IRobotModule {
     public void setState(State newState){
         if(state == newState) return;
         
-        switch (state){
+        switch (newState){
             case OPENING_GRIPPERS_FOR_INTAKE:
                 if(leftGripper.getState() == LeftGripper.State.CLOSED || leftGripper.getState() == LeftGripper.State.CLOSING)
                     leftGripper.setState(LeftGripper.State.OPENING);
@@ -40,17 +40,17 @@ public class Intake implements IStateBasedModule, IRobotModule {
                 activeIntake.setState(ActiveIntake.State.IDLE);
                 break;
         }
-        
-        state = newState;
+
+        this.state = newState;
     }
     
     public State getState(){
         return state;
     }
 
-    ActiveIntake activeIntake;
-    LeftGripper leftGripper;
-    RightGripper rightGripper;
+    public final ActiveIntake activeIntake;
+    public final LeftGripper leftGripper;
+    public final RightGripper rightGripper;
 
     public Intake(ActiveIntake activeIntake, LeftGripper leftGripper, RightGripper rightGripper, State initialState){
         this.activeIntake = activeIntake;

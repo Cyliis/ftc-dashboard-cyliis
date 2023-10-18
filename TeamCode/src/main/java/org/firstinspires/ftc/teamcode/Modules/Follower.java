@@ -18,7 +18,6 @@ public class Follower implements IRobotModule {
     public static boolean ENABLED = true;
 
     public static double followingCoefficient = 1, correctionCoefficient = 1, centripetalCorrectionCoefficient = .47, headingPIDCoefficient = 1;
-    public static int segmentsPerUnit = 100;
 
     private final MecanumDrive drive;
     private final Localizer localizer;

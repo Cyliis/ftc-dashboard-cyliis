@@ -59,7 +59,8 @@ public class LeftGripper implements IStateBasedModule, IRobotModule {
     }
 
     public LeftGripper(Hardware hardware, State initialState){
-        servo = new CoolServo(hardware.sch0, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
+        if(!ENABLED) servo = null;
+        else servo = new CoolServo(hardware.sch4, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
         timer.startTime();
         setState(initialState);
     }
@@ -74,8 +75,8 @@ public class LeftGripper implements IStateBasedModule, IRobotModule {
         if(!ENABLED) return;
 
         updateStateValues();
-        updateState();
         updateHardware();
+        updateState();
     }
 
     @Override

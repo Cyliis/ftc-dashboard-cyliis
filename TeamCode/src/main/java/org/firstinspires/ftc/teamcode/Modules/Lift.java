@@ -13,23 +13,23 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolMotor;
 @Config
 public class Lift implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
-    CoolMotor leftMotor, rightMotor;
+    private final CoolMotor leftMotor, rightMotor;
     public static boolean leftMotorReversed = false, rightMotorReversed = true;
-    CoolEncoder encoder;
+    public final CoolEncoder encoder;
     public static boolean encoderReversed = false;
 
-    public static int groundPos = 0, firstLevel = 50, increment = 50, level = 0, positionThresh = 2, passthroughPosition = 100;
+    public static int groundPos = 0, firstLevel = 20, increment = 70, level = 0, positionThresh = 4, passthroughPosition = 250;
 
     public static double resetPower = -0.5, resetVelocityThresh = 1;
 
-    public static PIDCoefficients pid = new PIDCoefficients(0,0,0);
-    public static double ff1 = 0, ff2 = 0;
+    public static PIDCoefficients pid = new PIDCoefficients(0.013,0.16,0.0006);
+    public static double ff1 = 0.1, ff2 = 0.0003;
 
     public enum State{
         DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
-        UP(groundPos + firstLevel + increment * (level - 1)), GOING_UP(groundPos + firstLevel + increment * (level - 1), UP);
+        UP(groundPos + firstLevel + increment * level), GOING_UP(groundPos + firstLevel + increment * level, UP);
 
         public int position;
         public final State nextState;
@@ -53,7 +53,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
 
     public void setState(State newState){
         if(state == newState) return;
-        state = newState;
+        this.state = newState;
     }
 
     private void updateStateValues(){
@@ -64,10 +64,13 @@ public class Lift implements IStateBasedModule, IRobotModule {
     }
 
     public Lift(Hardware hardware, State initialState){
-        leftMotor = new CoolMotor(hardware.meh3, CoolMotor.RunMode.PID, leftMotorReversed);
-        rightMotor = new CoolMotor(hardware.meh2, CoolMotor.RunMode.PID, rightMotorReversed);
+        if(!ENABLED) leftMotor = null;
+        else leftMotor = new CoolMotor(hardware.meh3, CoolMotor.RunMode.PID, leftMotorReversed);
+        if(!ENABLED) rightMotor = null;
+        else rightMotor = new CoolMotor(hardware.meh2, CoolMotor.RunMode.PID, rightMotorReversed);
 
-        encoder = new CoolEncoder(hardware.meh3, encoderReversed);
+        if(!ENABLED) encoder = null;
+        else encoder = new CoolEncoder(hardware.mch1, encoderReversed);
 
         this.state = initialState;
     }
@@ -105,8 +108,8 @@ public class Lift implements IStateBasedModule, IRobotModule {
         }else{
             leftMotor.setMode(CoolMotor.RunMode.PID);
             rightMotor.setMode(CoolMotor.RunMode.PID);
-            leftMotor.setPIDF(pid, ff1 + ff2 * (double)(encoder.getCurrentPosition() - groundPos));
-            rightMotor.setPIDF(pid, ff1 + ff2 * (double)(encoder.getCurrentPosition() - groundPos));
+            leftMotor.setPIDF(pid, ff1 + ff2 * (double)(state.position));
+            rightMotor.setPIDF(pid, ff1 + ff2 * (double)(state.position));
             leftMotor.calculatePower(encoder.getCurrentPosition(), state.position);
             rightMotor.calculatePower(encoder.getCurrentPosition(), state.position);
         }

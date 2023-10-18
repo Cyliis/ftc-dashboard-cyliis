@@ -26,19 +26,19 @@ public class Hardware {
         meh2 = hm.get(DcMotorEx.class, "eh2");
         meh3 = hm.get(DcMotorEx.class, "eh3");
 
-        sch0 = hm.get(Servo.class, "eh0");
-        sch1 = hm.get(Servo.class, "eh1");
-        sch2 = hm.get(Servo.class, "eh2");
-        sch3 = hm.get(Servo.class, "eh3");
-        sch4 = hm.get(Servo.class, "eh4");
-        sch5 = hm.get(Servo.class, "eh5");
+        sch0 = hm.get(Servo.class, "sch0");
+        sch1 = hm.get(Servo.class, "sch1");
+        sch2 = hm.get(Servo.class, "sch2");
+        sch3 = hm.get(Servo.class, "sch3");
+        sch4 = hm.get(Servo.class, "sch4");
+        sch5 = hm.get(Servo.class, "sch5");
 
-        seh0 = hm.get(Servo.class, "eh0");
-        seh1 = hm.get(Servo.class, "eh1");
-        seh2 = hm.get(Servo.class, "eh2");
-        seh3 = hm.get(Servo.class, "eh3");
-        seh4 = hm.get(Servo.class, "eh4");
-        seh5 = hm.get(Servo.class, "eh5");
+        seh0 = hm.get(Servo.class, "seh0");
+        seh1 = hm.get(Servo.class, "seh1");
+        seh2 = hm.get(Servo.class, "seh2");
+        seh3 = hm.get(Servo.class, "seh3");
+        seh4 = hm.get(Servo.class, "seh4");
+        seh5 = hm.get(Servo.class, "seh5");
 
         imu = new CoolIMU(hm);
     }
