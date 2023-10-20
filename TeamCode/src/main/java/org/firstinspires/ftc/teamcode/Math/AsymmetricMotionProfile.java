@@ -64,7 +64,7 @@ public class AsymmetricMotionProfile {
         return 0;
     }
 
-    private double getPosition(double time){
+    public double getPosition(double time){
         if(time <= t1) return initialPosition + sign*v0*time/2.0 + sign*getVelocity(1,time)*time/2.0;
         if(time <= t1+t2) return initialPosition + sign*v0*t1/2.0 + sign*getVelocity(1,t1)*t1/2.0 + sign*getVelocity(2, time)*(time-t1);
         if(time <= t1+t2+t3) return getPosition(t1+t2) + sign*maxReachedVelocity*t3/2.0 - sign*getVelocity(3, time) * (t1+t2+t3-time)/2.0;
@@ -97,6 +97,39 @@ public class AsymmetricMotionProfile {
 
     public double getTimeToMotionEnd(){
         return Math.max(0,t - timer.seconds());
+    }
+
+    private double getTime1(double position) {
+        return (-sign * v0 - Math.signum(v0) * Math.sqrt(v0 * v0 - 2 * sign * acceleration*(initialPosition-position))) / (sign * acceleration);
+    }
+
+    private double getTime2(double position) {
+        return (position - getPosition(t1)) / (sign * (v0 + t1 * acceleration)) + t1;
+    }
+
+    private double getTime3(double position) {
+        double qa = -deceleration;
+        double qb = deceleration * (t + t1 + t2) + maxReachedVelocity;
+        double qc = (2.0 / sign) * (getPosition(t1 + t2) - position) + maxReachedVelocity * t3 - t * (maxReachedVelocity + deceleration * (t1 + t2));
+        return (-qb + Math.sqrt(qb * qb - 4.0 * qa * qc)) / (2.0 * qa);
+    }
+
+    public double getTime(double position) {
+        if (position >= Math.min(getPosition(t1), getPosition(t1 + t2)) && position <= Math.max(getPosition(t1), getPosition(t1 + t2)))
+            return getTime2(position);
+
+        double s = getTime1(position);
+        if (s < 0) s = 0;
+        if (s > t1) {
+            s = getTime3(position);
+            if (s > t1 + t2 + t3)
+                s = t1 + t2 + t3;
+        }
+        return s;
+    }
+
+    public double getTimeTo(double position){
+        return Math.max(0,getTime(position) - timer.seconds());
     }
 
     public void telemetry(Telemetry telemetry){

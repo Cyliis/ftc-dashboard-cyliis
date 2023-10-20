@@ -50,12 +50,12 @@ public class BuruSebiGamepadControl implements IRobotModule {
             else if(robotModules.outtake.getState() == Outtake.State.DOWN) robotModules.outtake.setState(Outtake.State.GOING_UP);
         }
         if(stickyGamepad2.dpad_up){
-            Lift.level = Math.min(10, Lift.level + 1);
-            if(robotModules.outtake.getState() == Outtake.State.UP) robotModules.outtake.setState(Outtake.State.LIFT_GOING_UP);
+            Lift.level = Math.min(8, Lift.level + 1);
+            if(robotModules.outtake.getState() == Outtake.State.UP || robotModules.outtake.getState() == Outtake.State.LIFT_CHANGING_SCORING_POSITION) robotModules.outtake.setState(Outtake.State.LIFT_CHANGING_SCORING_POSITION);
         }
         if(stickyGamepad2.dpad_down){
             Lift.level = Math.max(0, Lift.level - 1);
-            if(robotModules.outtake.getState() == Outtake.State.UP) robotModules.outtake.setState(Outtake.State.LIFT_GOING_UP);
+            if(robotModules.outtake.getState() == Outtake.State.UP || robotModules.outtake.getState() == Outtake.State.LIFT_CHANGING_SCORING_POSITION) robotModules.outtake.setState(Outtake.State.LIFT_CHANGING_SCORING_POSITION);
         }
     }
 

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Math.AsymmetricMotionProfile;
 public class CoolServo {
 
     private final Servo servo;
-    private AsymmetricMotionProfile profile;
+    public AsymmetricMotionProfile profile;
     private boolean isProfiled = false;
 
     public CoolServo(Servo servo, boolean reversed, double initialPosition){

@@ -16,12 +16,13 @@ public class Pitch implements IStateBasedModule, IRobotModule {
     private final CoolServo servo;
     public static boolean reversedServo = false;
 
-    public static double intakePosition = 0.63, outtakePosition = 0.285;
+    public static double intakePosition = 0.64, outtakePosition = 0.34;
 
-    public static double profileMaxVelocity = 2.2, profileAcceleration = 1;
+    public static double profileMaxVelocity = 15, profileAcceleration = 8;
 
     public enum State{
-        INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE);
+        INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition),
+        GOING_OUTTAKE(outtakePosition, OUTTAKE);
 
         public double position;
         public final State nextState;

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Math.AsymmetricMotionProfile;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
 import org.firstinspires.ftc.teamcode.Robot.IStateBasedModule;
@@ -16,13 +17,16 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
     public final CoolServo leftServo, rightServo;
     public static boolean reversedLeftServo = false, reversedRightServo = true;
 
-    public static double intakePosition = 0.2, outtakePosition = 0.8, passthroughPosition = 0.05;
+    public static double intakePosition = 0.24, outtakePosition = 0.86, passthroughPosition = 0.14, verticalPosition = 0.52;
 
-    public static double profileMaxVelocity = 2.2, profileAcceleration = 1, profileDeceleration = 1;
+    public static double profileMaxVelocity = 15, profileAcceleration = 8, profileDeceleration = 8;
+
+    public AsymmetricMotionProfile predictiveProfile = new AsymmetricMotionProfile(profileMaxVelocity, profileAcceleration, profileDeceleration);
 
     public enum State{
         INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE), OUTTAKE(outtakePosition), GOING_OUTTAKE(outtakePosition, OUTTAKE),
-        PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH);
+        PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
+        VERTICAL(verticalPosition), GOING_VERTICAL(verticalPosition, VERTICAL);
 
         public double position;
         public final State nextState;
@@ -45,6 +49,8 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
         State.GOING_OUTTAKE.position = outtakePosition;
         State.PASSTHROUGH.position = passthroughPosition;
         State.GOING_PASSTHROUGH.position = passthroughPosition;
+        State.VERTICAL.position = verticalPosition;
+        State.GOING_VERTICAL.position = verticalPosition;
     }
 
     private State state;

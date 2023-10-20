@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-import org.checkerframework.checker.signedness.qual.Constant;
+import org.firstinspires.ftc.teamcode.Math.AsymmetricMotionProfile;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.IRobotModule;
 import org.firstinspires.ftc.teamcode.Robot.IStateBasedModule;
@@ -20,12 +20,16 @@ public class Lift implements IStateBasedModule, IRobotModule {
     public final CoolEncoder encoder;
     public static boolean encoderReversed = false;
 
-    public static int groundPos = 0, firstLevel = 20, increment = 70, level = 0, positionThresh = 4, passthroughPosition = 250;
+    public static int groundPos = 0, firstLevel = 140, increment = 69, level = 0, positionThresh = 4, passthroughPosition = 300;
 
-    public static double resetPower = -0.5, resetVelocityThresh = 1;
+    public static double resetPower = -0.05, velocityThreshold = 0;
 
-    public static PIDCoefficients pid = new PIDCoefficients(0.013,0.16,0.0006);
-    public static double ff1 = 0.1, ff2 = 0.0003;
+    public static PIDCoefficients pid = new PIDCoefficients(0.015,0.24,0.0003);
+    public static double ff1 = 0.14, ff2 = 0.0002;
+
+    public static double maxVelocity = 12000, acceleration = 8000, deceleration = 2500;
+    public AsymmetricMotionProfile profile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
+    public AsymmetricMotionProfile predictiveProfile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
 
     public enum State{
         DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
@@ -52,6 +56,8 @@ public class Lift implements IStateBasedModule, IRobotModule {
     }
 
     public void setState(State newState){
+        updateStateValues();
+        profile.setMotion(encoder.getCurrentPosition(), newState.position, encoder.getVelocity());
         if(state == newState) return;
         this.state = newState;
     }
@@ -59,8 +65,10 @@ public class Lift implements IStateBasedModule, IRobotModule {
     private void updateStateValues(){
         State.DOWN.position = groundPos;
         State.GOING_DOWN.position = groundPos;
-        State.UP.position = groundPos + firstLevel + increment * (level - 1);
-        State.GOING_UP.position = groundPos + firstLevel + increment * (level - 1);
+        State.UP.position = groundPos + firstLevel + increment * level;
+        State.GOING_UP.position = groundPos + firstLevel + increment * level;
+        State.GOING_PASSTHROUGH.position = groundPos + passthroughPosition;
+        State.PASSTHROUGH.position = groundPos + passthroughPosition;
     }
 
     public Lift(Hardware hardware, State initialState){
@@ -87,33 +95,38 @@ public class Lift implements IStateBasedModule, IRobotModule {
     @Override
     public void updateState() {
         if(state == State.RESETTING){
-            if(Math.abs(encoder.getVelocity()) <= resetVelocityThresh){
+            if(Math.abs(encoder.getVelocity()) <= velocityThreshold){
                 groundPos = encoder.getCurrentPosition();
                 state = state.nextState;
             }
         }
-        else {
-            if(Math.abs(state.position - encoder.getCurrentPosition()) <= positionThresh)
-                state = state.nextState;
-        }
+        else if(Math.abs(state.nextState.nextState.position - encoder.getCurrentPosition()) <= positionThresh/* && encoder.getVelocity() <= velocityThreshold*/)
+            state = state.nextState;
     }
+
+    public int target = 0;
 
     @Override
     public void updateHardware() {
+        if(profile.finalPosition != state.position) profile.setMotion(profile.getPosition(), state.position, profile.getSignedVelocity());
+
+        profile.update();
+
         if(state == State.RESETTING){
             leftMotor.setMode(CoolMotor.RunMode.RUN);
             rightMotor.setMode(CoolMotor.RunMode.RUN);
             leftMotor.setPower(resetPower);
             rightMotor.setPower(resetPower);
         }else{
+            target = (int)profile.getPosition();
+
             leftMotor.setMode(CoolMotor.RunMode.PID);
             rightMotor.setMode(CoolMotor.RunMode.PID);
-            leftMotor.setPIDF(pid, ff1 + ff2 * (double)(state.position));
-            rightMotor.setPIDF(pid, ff1 + ff2 * (double)(state.position));
-            leftMotor.calculatePower(encoder.getCurrentPosition(), state.position);
-            rightMotor.calculatePower(encoder.getCurrentPosition(), state.position);
+            leftMotor.setPIDF(pid, ff1 + ff2 * (double)(target));
+            rightMotor.setPIDF(pid, ff1 + ff2 * (double)(target));
+            leftMotor.calculatePower(encoder.getCurrentPosition(), target);
+            rightMotor.calculatePower(encoder.getCurrentPosition(), target);
         }
-
         leftMotor.update();
         rightMotor.update();
     }
