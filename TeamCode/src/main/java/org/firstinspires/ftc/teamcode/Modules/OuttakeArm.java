@@ -80,6 +80,8 @@ public class OuttakeArm implements IStateBasedModule, IRobotModule {
     public void update() {
         if(!ENABLED) return;
 
+        Lift.outtakeArmPosition = leftServo.profile.getPosition();
+
         updateStateValues();
         updateHardware();
         updateState();

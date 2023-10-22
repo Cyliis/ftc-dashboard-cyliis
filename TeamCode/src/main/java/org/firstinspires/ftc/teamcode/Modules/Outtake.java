@@ -9,7 +9,7 @@ public class Outtake implements IStateBasedModule, IRobotModule {
 
     public enum State{
         GOING_UP, ARM_LIFTING_UP, LIFT_GOING_UP, ARM_GOING_OUT, LIFT_TO_SCORE, UP,
-        GOING_DOWN, LIFT_GOING_PASSTHROUGH, ARM_GOING_BACK, LIFT_GOING_DOWN, ARM_TO_INTAKE, DOWN,
+        GOING_DOWN, ARM_GOING_BACK, LIFT_GOING_DOWN, ARM_TO_INTAKE, DOWN,
         LIFT_CHANGING_SCORING_POSITION
     }
 
@@ -43,13 +43,10 @@ public class Outtake implements IStateBasedModule, IRobotModule {
                 else setState(State.UP);
                 break;
             case GOING_DOWN:
-                if(lift.encoder.getCurrentPosition() <= Lift.State.PASSTHROUGH.position) setState(State.LIFT_GOING_PASSTHROUGH);
-                else setState(State.ARM_GOING_BACK);
-                break;
-            case LIFT_GOING_PASSTHROUGH:
-                lift.setState(Lift.State.GOING_PASSTHROUGH);
+                setState(State.ARM_GOING_BACK);
                 break;
             case ARM_GOING_BACK:
+                lift.setState(Lift.State.ADAPTABLE_PASSTHROUGH);
                 arm.setState(OuttakeArm.State.GOING_PASSTHROUGH);
                 pitch.setState(Pitch.State.GOING_INTAKE);
                 break;
@@ -106,14 +103,8 @@ public class Outtake implements IStateBasedModule, IRobotModule {
                 if(arm.getState() == OuttakeArm.State.OUTTAKE)
                     setState(State.LIFT_TO_SCORE);
                 break;
-            case LIFT_GOING_PASSTHROUGH:
-                arm.predictiveProfile.setMotion(arm.leftServo.profile.getPosition(), OuttakeArm.State.PASSTHROUGH.position, arm.leftServo.profile.getSignedVelocity());
-                if(lift.profile.getTimeToMotionEnd() <= arm.predictiveProfile.getTimeTo(OuttakeArm.State.VERTICAL.position))
-                    setState(State.ARM_GOING_BACK);
-                break;
             case ARM_GOING_BACK:
-                lift.predictiveProfile.setMotion(lift.profile.getPosition(), Lift.State.DOWN.position, lift.profile.getSignedVelocity());
-                if(arm.leftServo.getTimeToMotionEnd() <= lift.predictiveProfile.getTimeToMotionEnd())
+                if(arm.getState() == OuttakeArm.State.PASSTHROUGH)
                     setState(State.LIFT_GOING_DOWN);
                 break;
             case LIFT_GOING_DOWN:

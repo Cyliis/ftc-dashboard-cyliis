@@ -31,9 +31,23 @@ public class Lift implements IStateBasedModule, IRobotModule {
     public AsymmetricMotionProfile profile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
     public AsymmetricMotionProfile predictiveProfile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
 
+    public static double outtakeArmPosition = OuttakeArm.State.INTAKE.position;
+    private final double angleMultiplier = Math.toRadians(270);
+
+    public static double armLength = 260;
+    public static double armFloor = 40;
+
+    double passthroughPosition(double armPosition){
+        double outtakeArmAngle = (armPosition - OuttakeArm.State.VERTICAL.position) * angleMultiplier;
+        if(outtakeArmAngle <= 0){
+            return groundPos + Math.cos(outtakeArmAngle) * armLength + armFloor;
+        }
+        return groundPos + Math.min(passthroughPosition(0), Math.max(state.position, groundPos + Math.cos(outtakeArmAngle) * armLength + armFloor));
+    }
+
     public enum State{
         DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
-        UP(groundPos + firstLevel + increment * level), GOING_UP(groundPos + firstLevel + increment * level, UP);
+        UP(groundPos + firstLevel + increment * level), GOING_UP(groundPos + firstLevel + increment * level, UP), ADAPTABLE_PASSTHROUGH(groundPos);
 
         public int position;
         public final State nextState;
@@ -63,12 +77,14 @@ public class Lift implements IStateBasedModule, IRobotModule {
     }
 
     private void updateStateValues(){
+
         State.DOWN.position = groundPos;
         State.GOING_DOWN.position = groundPos;
         State.UP.position = groundPos + firstLevel + increment * level;
         State.GOING_UP.position = groundPos + firstLevel + increment * level;
-        State.GOING_PASSTHROUGH.position = groundPos + passthroughPosition;
-        State.PASSTHROUGH.position = groundPos + passthroughPosition;
+        State.GOING_PASSTHROUGH.position = (int)passthroughPosition(OuttakeArm.State.VERTICAL.position);
+        State.PASSTHROUGH.position = (int)passthroughPosition(OuttakeArm.State.VERTICAL.position);
+        State.ADAPTABLE_PASSTHROUGH.position = (int)passthroughPosition(outtakeArmPosition);
     }
 
     public Lift(Hardware hardware, State initialState){
