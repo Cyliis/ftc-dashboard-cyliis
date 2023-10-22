@@ -22,6 +22,7 @@ public class Intake implements IStateBasedModule, IRobotModule {
                     leftGripper.setState(LeftGripper.State.OPENING);
                 if(rightGripper.getState() == RightGripper.State.CLOSED || rightGripper.getState() == RightGripper.State.CLOSING)
                     rightGripper.setState(RightGripper.State.OPENING);
+                dropDown.setState(DropDown.State.GOING_INTAKE);
                 break;
             case INTAKE:
                 activeIntake.setState(ActiveIntake.State.RUNNING);
@@ -38,6 +39,7 @@ public class Intake implements IStateBasedModule, IRobotModule {
                 break;
             case IDLE:
                 activeIntake.setState(ActiveIntake.State.IDLE);
+                dropDown.setState(DropDown.State.GOING_UP);
                 break;
         }
 
@@ -51,11 +53,13 @@ public class Intake implements IStateBasedModule, IRobotModule {
     public final ActiveIntake activeIntake;
     public final LeftGripper leftGripper;
     public final RightGripper rightGripper;
+    public final DropDown dropDown;
 
-    public Intake(ActiveIntake activeIntake, LeftGripper leftGripper, RightGripper rightGripper, State initialState){
+    public Intake(ActiveIntake activeIntake, LeftGripper leftGripper, RightGripper rightGripper, DropDown dropDown, State initialState){
         this.activeIntake = activeIntake;
         this.leftGripper = leftGripper;
         this.rightGripper = rightGripper;
+        this.dropDown = dropDown;
         this.state = initialState;
     }
 
@@ -90,5 +94,6 @@ public class Intake implements IStateBasedModule, IRobotModule {
         activeIntake.update();
         leftGripper.update();
         rightGripper.update();
+        dropDown.update();
     }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class RobotModules implements IRobotModule {
 
     public ActiveIntake activeIntake;
+    public DropDown dropDown;
     public Intake intake;
     public LeftGripper leftGripper;
     public Lift lift;
@@ -24,8 +25,9 @@ public class RobotModules implements IRobotModule {
         outtakeArm = new OuttakeArm(hardware, OuttakeArm.State.INTAKE);
         pitch = new Pitch(hardware, Pitch.State.INTAKE);
         rightGripper = new RightGripper(hardware, RightGripper.State.CLOSED);
+        dropDown = new DropDown(hardware, DropDown.State.UP);
 
-        intake = new Intake(activeIntake, leftGripper, rightGripper, Intake.State.IDLE);
+        intake = new Intake(activeIntake, leftGripper, rightGripper, dropDown, Intake.State.IDLE);
         outtake = new Outtake(lift, outtakeArm, pitch, Outtake.State.DOWN);
     }
 

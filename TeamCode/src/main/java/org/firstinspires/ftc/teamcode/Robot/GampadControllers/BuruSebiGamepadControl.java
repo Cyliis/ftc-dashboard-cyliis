@@ -27,7 +27,7 @@ public class BuruSebiGamepadControl implements IRobotModule {
     private void intakeControl(){
         if(robotModules.outtake.getState()!= Outtake.State.DOWN) return;
         if(gamepad2.right_trigger > triggerThreshold && (robotModules.intake.getState() != Intake.State.INTAKE && robotModules.intake.getState() != Intake.State.OPENING_GRIPPERS_FOR_INTAKE)) {
-            robotModules.intake.setState(Intake.State.INTAKE);
+            robotModules.intake.setState(Intake.State.OPENING_GRIPPERS_FOR_INTAKE);
         }
         if(gamepad2.right_trigger < triggerThreshold && (robotModules.intake.getState() == Intake.State.INTAKE || robotModules.intake.getState() == Intake.State.OPENING_GRIPPERS_FOR_INTAKE)){
             robotModules.intake.setState(Intake.State.STOP_INTAKE);
