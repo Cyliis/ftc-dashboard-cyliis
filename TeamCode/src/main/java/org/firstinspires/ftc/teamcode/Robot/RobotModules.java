@@ -33,16 +33,20 @@ public class RobotModules implements IRobotModule {
 
     public void telemetry(Telemetry telemetry){
         telemetry.addData("Lift level", Lift.level);
-        telemetry.addData("Lift target position", lift.target);
-        if(lift.encoder!=null) telemetry.addData("Lift current position", outtake.lift.encoder.getCurrentPosition());
-        telemetry.addData("Lift current state", lift.getState());
-        if(lift.encoder!=null) telemetry.addData("Lift ground", Lift.groundPos);
+//        telemetry.addData("Lift target position", lift.profile.finalPosition);
+//        if(lift.encoder!=null) telemetry.addData("Lift current position", outtake.lift.encoder.getCurrentPosition());
+//        telemetry.addData("Lift current state", lift.getState());
+//        telemetry.addData("Adaptable passthrough position", lift.passthroughPosition(Lift.outtakeArmPosition));
+//        if(lift.encoder!=null) telemetry.addData("Lift ground", Lift.groundPos);
         telemetry.addData("Intake state", intake.getState());
         telemetry.addData("Outtake state", outtake.getState());
-        telemetry.addData("Outtake arm state", outtakeArm.getState());
-        if(outtakeArm.leftServo != null) telemetry.addData("Outtake arm position", outtakeArm.leftServo.cachedPosition);
-        if(outtakeArm.leftServo != null) telemetry.addData("Outtake arm time to motion end", outtakeArm.leftServo.getTimeToMotionEnd());
-        telemetry.addData("Outtake arm target position", outtakeArm.leftServo.cachedPosition);
+//        telemetry.addData("Outtake arm state", outtakeArm.getState());
+//        if(outtakeArm.leftServo != null) telemetry.addData("Outtake arm position", outtakeArm.leftServo.cachedPosition);
+//        telemetry.addData("Outtake arm position lift", Math.cos((Lift.outtakeArmPosition - OuttakeArm.State.VERTICAL.position) * Math.toRadians(270)) * Lift.armLength + Lift.armFloor);
+        telemetry.addData("Active intake state", activeIntake.getState());
+        telemetry.addData("Left gripper state", leftGripper.getState());
+        telemetry.addData("Right gripper state", rightGripper.getState());
+        telemetry.addData("Dropdown state", dropDown.getState());
     }
 
     @Override

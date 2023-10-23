@@ -20,14 +20,14 @@ public class Lift implements IStateBasedModule, IRobotModule {
     public final CoolEncoder encoder;
     public static boolean encoderReversed = false;
 
-    public static int groundPos = 0, firstLevel = 140, increment = 69, level = 0, positionThresh = 4, passthroughPosition = 300;
+    public static int groundPos = 0, firstLevel = 140, increment = 69, level = 0, positionThresh = 16, passthroughPosition = 300;
 
-    public static double resetPower = -0.05, velocityThreshold = 0;
+    public static double resetPower = -0.2, velocityThreshold = 0;
 
     public static PIDCoefficients pid = new PIDCoefficients(0.015,0.24,0.0003);
     public static double ff1 = 0.14, ff2 = 0.0002;
 
-    public static double maxVelocity = 12000, acceleration = 8000, deceleration = 2500;
+    public static double maxVelocity = 12000, acceleration = 16000, deceleration = 3500;
     public AsymmetricMotionProfile profile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
     public AsymmetricMotionProfile predictiveProfile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
 
@@ -35,18 +35,17 @@ public class Lift implements IStateBasedModule, IRobotModule {
     private final double angleMultiplier = Math.toRadians(270);
 
     public static double armLength = 260;
-    public static double armFloor = 40;
+    public static double armFloor = 90;
 
-    double passthroughPosition(double armPosition){
-        double outtakeArmAngle = (armPosition - OuttakeArm.State.VERTICAL.position) * angleMultiplier;
-        if(outtakeArmAngle <= 0){
-            return groundPos + Math.cos(outtakeArmAngle) * armLength + armFloor;
+    public double passthroughPosition(double armPosition){
+        if((armPosition - OuttakeArm.State.VERTICAL.position) * angleMultiplier <= 0){
+            return Math.cos((armPosition - OuttakeArm.State.VERTICAL.position) * angleMultiplier) * armLength + armFloor;
         }
-        return groundPos + Math.min(passthroughPosition(0), Math.max(state.position, groundPos + Math.cos(outtakeArmAngle) * armLength + armFloor));
+        return Math.min(armLength + armFloor, Math.max(State.UP.position - groundPos, Math.cos((armPosition - OuttakeArm.State.VERTICAL.position) * angleMultiplier) * armLength + armFloor));
     }
 
     public enum State{
-        DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(passthroughPosition), GOING_PASSTHROUGH(passthroughPosition, PASSTHROUGH),
+        DOWN(groundPos), RESETTING(groundPos, DOWN), GOING_DOWN(groundPos, RESETTING), PASSTHROUGH(groundPos + passthroughPosition), GOING_PASSTHROUGH(groundPos + passthroughPosition, PASSTHROUGH),
         UP(groundPos + firstLevel + increment * level), GOING_UP(groundPos + firstLevel + increment * level, UP), ADAPTABLE_PASSTHROUGH(groundPos);
 
         public int position;
@@ -71,7 +70,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
 
     public void setState(State newState){
         updateStateValues();
-        profile.setMotion(encoder.getCurrentPosition(), newState.position, encoder.getVelocity());
+        profile.setMotion(encoder.getCurrentPosition(), newState.position, profile.getSignedVelocity());
         if(state == newState) return;
         this.state = newState;
     }
@@ -84,7 +83,8 @@ public class Lift implements IStateBasedModule, IRobotModule {
         State.GOING_UP.position = groundPos + firstLevel + increment * level;
         State.GOING_PASSTHROUGH.position = (int)passthroughPosition(OuttakeArm.State.VERTICAL.position);
         State.PASSTHROUGH.position = (int)passthroughPosition(OuttakeArm.State.VERTICAL.position);
-        State.ADAPTABLE_PASSTHROUGH.position = (int)passthroughPosition(outtakeArmPosition);
+        State.ADAPTABLE_PASSTHROUGH.position = groundPos + (int)passthroughPosition(outtakeArmPosition);
+//        State.ADAPTABLE_PASSTHROUGH.position = groundPos + (int)passthroughPosition(OuttakeArm.State.VERTICAL.position);
     }
 
     public Lift(Hardware hardware, State initialState){
@@ -116,7 +116,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
                 state = state.nextState;
             }
         }
-        else if(Math.abs(state.nextState.nextState.position - encoder.getCurrentPosition()) <= positionThresh/* && encoder.getVelocity() <= velocityThreshold*/)
+        else if(Math.abs(state.nextState.nextState.position - encoder.getCurrentPosition()) <= positionThresh)
             state = state.nextState;
     }
 
@@ -124,8 +124,6 @@ public class Lift implements IStateBasedModule, IRobotModule {
 
     @Override
     public void updateHardware() {
-        if(profile.finalPosition != state.position) profile.setMotion(profile.getPosition(), state.position, profile.getSignedVelocity());
-
         profile.update();
 
         if(state == State.RESETTING){
@@ -145,5 +143,7 @@ public class Lift implements IStateBasedModule, IRobotModule {
         }
         leftMotor.update();
         rightMotor.update();
+
+        if(profile.finalPosition != state.position) profile.setMotion(profile.getPosition(), state.position, profile.getSignedVelocity());
     }
 }

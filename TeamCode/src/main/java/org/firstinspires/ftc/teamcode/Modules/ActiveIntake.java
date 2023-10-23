@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolMotor;
 @Config
 public class ActiveIntake implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     private final CoolMotor motor;
     public static boolean reversedMotor = false;

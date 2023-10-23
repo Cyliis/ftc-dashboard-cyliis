@@ -11,14 +11,14 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolServo;
 @Config
 public class LeftGripper implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     private final CoolServo servo;
     public static boolean reversedServo = false;
 
-    public static double openPosition = 0.5, closedPosition = 0.5;
+    public static double openPosition = 0.35, closedPosition = 0.55;
 
-    public static double profileMaxVelocity = 1, profileAcceleration = 1;
+    public static double profileMaxVelocity = 6, profileAcceleration = 3;
 
     public enum State{
         OPEN(openPosition), OPENING(openPosition, OPEN), CLOSED(openPosition), CLOSING(openPosition, CLOSED);

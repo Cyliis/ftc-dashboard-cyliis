@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Utils.Vector;
 @Config
 public class MecanumDrive implements IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     private PredictiveLocalizer localizer;
 

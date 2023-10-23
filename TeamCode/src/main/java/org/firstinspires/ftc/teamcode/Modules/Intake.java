@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Robot.IStateBasedModule;
 
 public class Intake implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     public enum State{
         OPENING_GRIPPERS_FOR_INTAKE, INTAKE, STOP_INTAKE, STOP_INTAKE_THEN_REVERSE, REVERSE, IDLE

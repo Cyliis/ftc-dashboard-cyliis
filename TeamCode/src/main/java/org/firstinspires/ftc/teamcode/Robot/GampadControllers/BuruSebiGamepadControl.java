@@ -62,7 +62,7 @@ public class BuruSebiGamepadControl implements IRobotModule {
     public void grippersControl(){
         if(robotModules.outtake.getState() != Outtake.State.UP && robotModules.outtake.getState() != Outtake.State.LIFT_GOING_UP) return;
         if(robotModules.leftGripper.getState() == LeftGripper.State.CLOSED && stickyGamepad1.x) robotModules.leftGripper.setState(LeftGripper.State.OPENING);
-        if(robotModules.rightGripper.getState() == RightGripper.State.CLOSED && stickyGamepad1.x) robotModules.rightGripper.setState(RightGripper.State.OPENING);
+        if(robotModules.rightGripper.getState() == RightGripper.State.CLOSED && stickyGamepad1.a) robotModules.rightGripper.setState(RightGripper.State.OPENING);
     }
 
     @Override
