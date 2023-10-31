@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Utils.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.Wrappers.CoolEncoder;
 import org.firstinspires.ftc.teamcode.Wrappers.CoolMotor;
 
+@Disabled
 @Config
 @TeleOp(name = "PID test")
 public class PIDTest extends OpMode {

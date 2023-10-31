@@ -43,10 +43,10 @@ public class RobotModules implements IRobotModule {
 //        telemetry.addData("Outtake arm state", outtakeArm.getState());
 //        if(outtakeArm.leftServo != null) telemetry.addData("Outtake arm position", outtakeArm.leftServo.cachedPosition);
 //        telemetry.addData("Outtake arm position lift", Math.cos((Lift.outtakeArmPosition - OuttakeArm.State.VERTICAL.position) * Math.toRadians(270)) * Lift.armLength + Lift.armFloor);
-        telemetry.addData("Active intake state", activeIntake.getState());
-        telemetry.addData("Left gripper state", leftGripper.getState());
-        telemetry.addData("Right gripper state", rightGripper.getState());
-        telemetry.addData("Dropdown state", dropDown.getState());
+//        telemetry.addData("Active intake state", activeIntake.getState());
+//        telemetry.addData("Left gripper state", leftGripper.getState());
+//        telemetry.addData("Right gripper state", rightGripper.getState());
+//        telemetry.addData("Dropdown state", dropDown.getState());
     }
 
     @Override

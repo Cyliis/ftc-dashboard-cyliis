@@ -56,10 +56,10 @@ public class MecanumDrive implements IRobotModule {
         backLeft = new CoolMotor(hardware.mch2, CoolMotor.RunMode.RUN, backLeftMotorReversed);
         backRight = new CoolMotor(hardware.mch3, CoolMotor.RunMode.RUN, backRightMotorReversed);
 
-        frontLeft.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
-        frontRight.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
-        backLeft.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
-        backRight.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontLeft.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehaviour(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.runMode = runMode;
     }

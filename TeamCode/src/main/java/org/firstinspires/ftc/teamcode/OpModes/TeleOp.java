@@ -77,6 +77,7 @@ public class TeleOp extends LinearOpMode {
 
             robotModules.telemetry(telemetry);
 
+            telemetry.addData("Imu angle", drive.getLocalizer().getPoseEstimate().getHeading());
             telemetry.addData("Hz", 1.0/loopTimer.seconds());
             loopTimer.reset();
 

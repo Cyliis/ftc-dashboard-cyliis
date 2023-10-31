@@ -14,11 +14,11 @@ public class RightGripper implements IStateBasedModule, IRobotModule {
     public static boolean ENABLED = true;
 
     private final CoolServo servo;
-    public static boolean reversedServo = false;
+    public static boolean reversedServo = true;
 
-    public static double openPosition = 0.4, closedPosition = 0.1;
+    public static double openPosition = 0.83, closedPosition = 0.33;
 
-    public static double profileMaxVelocity = 6, profileAcceleration = 3;
+    public static double profileMaxVelocity = 16, profileAcceleration = 10;
 
     public enum State{
         OPEN(openPosition), OPENING(openPosition, OPEN), CLOSED(openPosition), CLOSING(openPosition, CLOSED);

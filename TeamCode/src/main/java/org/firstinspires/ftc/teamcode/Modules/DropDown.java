@@ -11,14 +11,14 @@ import org.firstinspires.ftc.teamcode.Wrappers.CoolServo;
 @Config
 public class DropDown implements IStateBasedModule, IRobotModule {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     private final CoolServo servo;
     public static boolean reversedServo = false;
 
-    public static double intakePosition = 0.5, upPosition = 0.5;
+    public static double intakePosition = 0.12, upPosition = 0.6;
 
-    public static double profileMaxVelocity = 1, profileAcceleration = 1;
+    public static double profileMaxVelocity = 20, profileAcceleration = 20;
 
     public enum State{
         UP(upPosition), GOING_UP(upPosition, UP), INTAKE(intakePosition), GOING_INTAKE(intakePosition, INTAKE);
@@ -60,7 +60,7 @@ public class DropDown implements IStateBasedModule, IRobotModule {
 
     public DropDown(Hardware hardware, State initialState){
         if(!ENABLED) servo = null;
-        else servo = new CoolServo(hardware.sch5, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
+        else servo = new CoolServo(hardware.sch3, reversedServo, profileMaxVelocity, profileAcceleration, initialState.position);
         timer.startTime();
         setState(initialState);
     }

@@ -20,7 +20,7 @@ public class CoolIMU {
         imu = hardwareMap.get(IMU.class, "imu");
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
         ));
         imu.initialize(parameters);
 
@@ -40,7 +40,7 @@ public class CoolIMU {
                     imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 }
                 synchronized (imuLock2){
-                    imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+                    imuVelocity = imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
                 }
             }
         }).start();

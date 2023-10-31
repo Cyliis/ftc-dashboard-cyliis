@@ -29,6 +29,7 @@ public class Intake implements IStateBasedModule, IRobotModule {
                 break;
             case STOP_INTAKE:
             case STOP_INTAKE_THEN_REVERSE:
+                dropDown.setState(DropDown.State.GOING_UP);
                 if(leftGripper.getState() == LeftGripper.State.OPEN || leftGripper.getState() == LeftGripper.State.OPENING)
                     leftGripper.setState(LeftGripper.State.CLOSING);
                 if(rightGripper.getState() == RightGripper.State.OPEN || rightGripper.getState() == RightGripper.State.OPENING)
@@ -39,7 +40,6 @@ public class Intake implements IStateBasedModule, IRobotModule {
                 break;
             case IDLE:
                 activeIntake.setState(ActiveIntake.State.IDLE);
-                dropDown.setState(DropDown.State.GOING_UP);
                 break;
         }
 

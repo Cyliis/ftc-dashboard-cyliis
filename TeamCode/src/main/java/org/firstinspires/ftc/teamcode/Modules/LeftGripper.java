@@ -16,9 +16,9 @@ public class LeftGripper implements IStateBasedModule, IRobotModule {
     private final CoolServo servo;
     public static boolean reversedServo = false;
 
-    public static double openPosition = 0.35, closedPosition = 0.55;
+    public static double openPosition = 0.8, closedPosition = 0.3;
 
-    public static double profileMaxVelocity = 6, profileAcceleration = 3;
+    public static double profileMaxVelocity = 16, profileAcceleration = 10;
 
     public enum State{
         OPEN(openPosition), OPENING(openPosition, OPEN), CLOSED(openPosition), CLOSING(openPosition, CLOSED);

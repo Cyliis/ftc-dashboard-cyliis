@@ -9,7 +9,7 @@ public class Outtake implements IStateBasedModule, IRobotModule {
 
     public enum State{
         GOING_UP, ARM_LIFTING_UP, LIFT_GOING_UP, ARM_GOING_OUT, LIFT_TO_SCORE, UP,
-        GOING_DOWN, ARM_GOING_BACK, LIFT_GOING_DOWN, ARM_TO_INTAKE, DOWN,
+        GOING_DOWN, ARM_GOING_BACK, LIFT_GOING_DOWN, DOWN,
         LIFT_CHANGING_SCORING_POSITION
     }
 
@@ -47,14 +47,11 @@ public class Outtake implements IStateBasedModule, IRobotModule {
                 break;
             case ARM_GOING_BACK:
                 lift.setState(Lift.State.ADAPTABLE_PASSTHROUGH);
-                arm.setState(OuttakeArm.State.GOING_PASSTHROUGH);
+                arm.setState(OuttakeArm.State.GOING_INTAKE);
                 pitch.setState(Pitch.State.GOING_INTAKE);
                 break;
             case LIFT_GOING_DOWN:
                 lift.setState(Lift.State.GOING_DOWN);
-                break;
-            case ARM_TO_INTAKE:
-                arm.setState(OuttakeArm.State.GOING_INTAKE);
                 break;
         }
     }
@@ -104,15 +101,11 @@ public class Outtake implements IStateBasedModule, IRobotModule {
                     setState(State.LIFT_TO_SCORE);
                 break;
             case ARM_GOING_BACK:
-                if(arm.getState() == OuttakeArm.State.PASSTHROUGH)
+                if(arm.getState() == OuttakeArm.State.INTAKE)
                     setState(State.LIFT_GOING_DOWN);
                 break;
             case LIFT_GOING_DOWN:
                 if(lift.getState() == Lift.State.DOWN)
-                    setState(State.ARM_TO_INTAKE);
-                break;
-            case ARM_TO_INTAKE:
-                if(arm.getState() == OuttakeArm.State.INTAKE)
                     setState(State.DOWN);
                 break;
         }

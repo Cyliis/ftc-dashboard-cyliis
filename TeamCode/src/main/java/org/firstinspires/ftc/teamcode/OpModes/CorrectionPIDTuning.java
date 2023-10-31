@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Modules.Localizer;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Modules.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Utils.Pose;
 
+@Disabled
 @Config
 @Autonomous(name = "Correction PID Tuning")
 public class CorrectionPIDTuning extends LinearOpMode {
